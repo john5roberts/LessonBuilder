@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "snippets": [
+    {
+      "id": "demo-chord-hammer",
+      "title": "Demo — Chord Hammer-on",
+      "file": "demo-chord-hammer.json"
+    }
+  ]
+}

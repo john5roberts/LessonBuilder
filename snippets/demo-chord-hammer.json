@@ -1,0 +1,177 @@
+{
+  "format": "guitar-animation-snippet",
+  "version": 1,
+  "id": "demo-chord-hammer",
+  "title": "Demo — Chord Hammer-on",
+  "sourceKeyPc": 0,
+  "openKeyPc": 7,
+  "openShift": 5,
+  "variants": {
+    "original": {
+      "keyPc": 0,
+      "events": [
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "chord",
+          "chordId": "demo-chord-1",
+          "durationUnits": 4,
+          "play": true,
+          "notes": [
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "M"
+            }
+          ]
+        },
+        {
+          "type": "move",
+          "movement": "hammer-on",
+          "chordMove": true,
+          "sourceChordId": "demo-chord-1",
+          "chordId": "demo-chord-1",
+          "movingNoteIndex": 0,
+          "chordBefore": [
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "M"
+            }
+          ],
+          "chordAfter": [
+            {
+              "s": 4,
+              "f": 7,
+              "finger": "R"
+            },
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "M"
+            }
+          ],
+          "from": {
+            "s": 4,
+            "f": 5
+          },
+          "to": {
+            "s": 4,
+            "f": 7
+          },
+          "fromFinger": "I",
+          "finger": "R",
+          "toFinger": "R",
+          "durationUnits": 4,
+          "play": true
+        }
+      ]
+    },
+    "open": {
+      "keyPc": 7,
+      "events": [
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 2,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "chord",
+          "chordId": "demo-chord-1",
+          "durationUnits": 4,
+          "play": true,
+          "notes": [
+            {
+              "s": 4,
+              "f": 0
+            },
+            {
+              "s": 5,
+              "f": 0
+            }
+          ]
+        },
+        {
+          "type": "move",
+          "movement": "hammer-on",
+          "chordMove": true,
+          "sourceChordId": "demo-chord-1",
+          "chordId": "demo-chord-1",
+          "movingNoteIndex": 0,
+          "chordBefore": [
+            {
+              "s": 4,
+              "f": 0
+            },
+            {
+              "s": 5,
+              "f": 0
+            }
+          ],
+          "chordAfter": [
+            {
+              "s": 4,
+              "f": 2,
+              "finger": "I"
+            },
+            {
+              "s": 5,
+              "f": 0
+            }
+          ],
+          "from": {
+            "s": 4,
+            "f": 0
+          },
+          "to": {
+            "s": 4,
+            "f": 2
+          },
+          "finger": "I",
+          "toFinger": "I",
+          "durationUnits": 4,
+          "play": true
+        }
+      ]
+    }
+  }
+}

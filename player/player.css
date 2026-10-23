@@ -1,0 +1,1721 @@
+
+:root{
+  /* Exact Guit-Map geometry */
+  --board-w:183px;
+  --board-h:586px;
+  --head-h:56px;
+  --nut-h:14px;
+
+  --pink:#ff1493;
+  --green:#21f07d;
+  --red:#ff4d5d;
+  --blue:#4aa3ff;
+  --text-main:#f2f6fb;
+  --text-muted:#aeb9c8;
+}
+*{
+  box-sizing:border-box;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;
+}
+html,body{
+  margin:0;
+  background:#05070b;
+  color:var(--text-main);
+}
+html{
+  min-height:100%;
+}
+body{
+  position:relative;
+  width:100%;
+  min-width:max-content;
+  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:14px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:12px;
+  overflow:auto;
+}
+button,select{font:inherit}
+
+/* Guit-Map shell dimensions */
+.app{
+  position:relative;
+  z-index:1;
+  display:inline-block;
+  flex-shrink:0;
+  border:1px solid rgba(180,205,240,.16);
+  border-radius:28px;
+  padding:20px;
+  margin:24px auto;
+  background:linear-gradient(180deg,rgba(24,32,46,.94),rgba(10,14,22,.96));
+  box-shadow:0 28px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.apptitle{
+  position:absolute;
+  top:8px;left:0;right:0;
+  text-align:center;
+  font-size:11px;
+  line-height:1;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:rgba(235,242,255,.72);
+  font-weight:700;
+  pointer-events:none;
+}
+.layout{
+  display:flex;
+  gap:18px;
+  align-items:flex-start;
+  justify-content:center;
+  flex-wrap:nowrap;
+}
+.leftcol{
+  width:92px;
+  min-width:92px;
+  min-height:684px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:center;
+  flex-shrink:0;
+}
+.maincol{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+.panel,.wrap{
+  border:1px solid rgba(210,226,255,.14);
+  box-shadow:0 10px 24px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.panel{
+  width:92px;
+  border-radius:18px;
+  padding:8px;
+  background:linear-gradient(180deg,rgba(29,39,56,.92),rgba(16,23,35,.92));
+}
+.wrap{
+  padding:20px;
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(18,26,38,.7),rgba(8,12,19,.72));
+  box-shadow:0 22px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.05);
+}
+.shell{
+  position:relative;
+  width:var(--board-w);
+  padding-top:var(--head-h);
+  background:linear-gradient(180deg,rgba(105,135,178,.10),rgba(255,255,255,0) 18%,rgba(255,255,255,.02) 50%,rgba(0,0,0,.18) 100%),#101722;
+  box-shadow:inset 0 0 0 1px rgba(210,226,255,.10),inset 10px 0 22px rgba(0,0,0,.18),inset -10px 0 22px rgba(0,0,0,.18);
+  isolation:isolate;
+  transform:translateY(-22px);
+}
+.openrow{
+  position:absolute;
+  top:0;left:0;
+  width:100%;
+  height:var(--head-h);
+  pointer-events:none;
+}
+.nut{
+  position:absolute;
+  top:calc(var(--head-h) - 4px);
+  left:0;
+  width:100%;
+  height:var(--nut-h);
+  background:#e8eef7;
+  box-shadow:0 0 10px rgba(255,255,255,.22);
+  z-index:5;
+}
+.board{
+  position:relative;
+  width:100%;
+  height:var(--board-h);
+  overflow:visible;
+  background:linear-gradient(90deg,rgba(255,255,255,.035) 0 1px,transparent 1px 100%),linear-gradient(180deg,rgba(255,255,255,.045),rgba(0,0,0,.16));
+}
+.fret{
+  position:absolute;
+  left:0;
+  width:100%;
+  height:2px;
+  background:rgba(230,240,255,.42);
+  box-shadow:0 0 6px rgba(140,180,255,.18);
+  z-index:2;
+}
+.string{
+  position:absolute;
+  top:0;
+  height:100%;
+  transform:translateX(-50%);
+  background:rgba(232,241,255,.62);
+  box-shadow:0 0 6px rgba(180,210,255,.26);
+  border-radius:999px;
+  z-index:3;
+}
+.inlay{
+  position:absolute;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:rgba(232,241,255,.22);
+  left:50%;
+  transform:translate(-50%,-50%);
+  z-index:1;
+}
+.open{
+  position:absolute;
+  top:32px;
+  transform:translateX(-50%);
+  width:23px;height:23px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text-muted);
+  pointer-events:none;
+  z-index:2;
+  font-size:12px;
+  font-weight:800;
+}
+.hit{
+  position:absolute;
+  width:24px;
+  transform:translate(-50%,-50%);
+  border-radius:14px;
+  cursor:pointer;
+  z-index:30;
+  touch-action:none;
+  pointer-events:auto;
+}
+.openhit{
+  position:absolute;
+  top:32px;
+  width:28px;height:32px;
+  transform:translate(-50%,-50%);
+  border-radius:14px;
+  z-index:31;
+  pointer-events:auto;
+  touch-action:none;
+}
+.fretlab{
+  position:absolute;
+  right:-18px;
+  transform:translateY(-50%);
+  width:18px;
+  text-align:center;
+  color:var(--text-muted);
+  z-index:16;
+  font-size:12px;
+  pointer-events:none;
+}
+
+/* Guit-Map-sized 23px markers */
+.frameworkMark,.fingerMark{
+  position:absolute;
+  width:23px;height:23px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transform:translate(-50%,-50%);
+  z-index:20;
+  pointer-events:none;
+  font-size:11px;
+  font-weight:800;
+}
+.frameworkMark.in{
+  background:var(--green);
+  color:#04140b;
+  box-shadow:0 0 10px rgba(33,240,125,.38),0 3px 8px rgba(0,0,0,.4);
+}
+.frameworkMark.out{
+  background:var(--red);
+  color:white;
+  box-shadow:0 0 10px rgba(255,77,93,.36),0 3px 8px rgba(0,0,0,.4);
+}
+.fingerMark{
+  background:var(--pink);
+  color:white;
+  box-shadow:0 0 12px rgba(255,20,147,.55),0 3px 8px rgba(0,0,0,.42);
+}
+.fingerMark.bendRing{
+  background:transparent;
+  color:transparent;
+  border:4px solid var(--pink);
+  box-shadow:0 0 12px rgba(255,20,147,.62),0 3px 8px rgba(0,0,0,.42);
+}
+
+.articulationSpark{
+  position:absolute;
+  width:1px;
+  height:1px;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  z-index:48;
+}
+.articulationSpark .sparkRay{
+  position:absolute;
+  left:0;
+  top:0;
+  width:2px;
+  height:10px;
+  border-radius:999px;
+  background:#fff;
+  box-shadow:0 0 5px rgba(255,255,255,.95);
+  transform-origin:50% 0%;
+  opacity:0;
+  animation:articulationFireworkRay 230ms ease-out forwards;
+}
+@keyframes articulationFireworkRay{
+  0%{
+    opacity:0;
+    transform:rotate(var(--angle)) translateY(-7px) scaleY(.20);
+  }
+  15%{
+    opacity:1;
+  }
+  55%{
+    opacity:1;
+    transform:rotate(var(--angle)) translateY(-17px) scaleY(1);
+  }
+  100%{
+    opacity:0;
+    transform:rotate(var(--angle)) translateY(-23px) scaleY(.55);
+  }
+}
+
+
+/* Fingering playback layer — first integrated from the standalone prototype */
+#fingerLayer{
+  position:absolute;
+  left:0;
+  top:0;
+  width:260px;
+  height:calc(var(--head-h) + var(--board-h));
+  pointer-events:none;
+  z-index:29;
+  overflow:visible;
+  display:none;
+}
+body.player.fingerDemo #fingerLayer{display:block}
+body.player.fingeringPlayback #fingerLayer{display:block}
+
+/* Admin fingering assignment */
+.fingeringTool{
+  width:92px;
+  height:34px;
+  border-radius:9px;
+  border:1px solid rgba(255,20,147,.34);
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#eef4fb;
+  padding:0 7px;
+  font-size:10px;
+  font-weight:800;
+  line-height:1;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.fingeringTool.on{
+  border-color:rgba(255,20,147,.88);
+  background:linear-gradient(180deg,rgba(76,24,63,.98),rgba(41,12,34,.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,20,147,.42),
+    0 0 10px rgba(255,20,147,.18);
+}
+#fingerAssignMark{
+  position:absolute;
+  width:23px;height:23px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:var(--pink);
+  color:white;
+  font-size:11px;
+  font-weight:800;
+  box-shadow:0 0 12px rgba(255,20,147,.72),0 3px 8px rgba(0,0,0,.46);
+  z-index:60;
+  pointer-events:none;
+}
+#fingerAssignDestinationMark{
+  position:absolute;
+  width:8px;height:8px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  display:none;
+  background:var(--pink);
+  box-shadow:0 0 7px rgba(255,20,147,.72);
+  z-index:59;
+  pointer-events:none;
+}
+#fingerAssignPopup{display:none !important}
+#fingerAssignMovement{display:none !important}
+
+.fingerAssignCue{
+  position:absolute;
+  width:15px;
+  height:15px;
+  border-radius:50%;
+  transform:translate(6px,-18px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  color:#000;
+  border:1px solid rgba(0,0,0,.42);
+  box-shadow:0 0 5px rgba(255,255,255,.36),0 2px 5px rgba(0,0,0,.48);
+  font-size:9px;
+  line-height:1;
+  font-weight:900;
+  z-index:61;
+  pointer-events:none;
+}
+
+body.fingeringAssignMode #fingerLayer{
+  display:block;
+  pointer-events:auto;
+  z-index:58;
+}
+body.fingeringAssignMode .fingerRect{
+  pointer-events:auto;
+  cursor:pointer;
+  opacity:.66;
+  border-color:rgba(255,255,255,.40);
+}
+body.fingeringAssignMode .fingerRect:hover{
+  opacity:.82;
+}
+body.fingeringAssignMode .fingerRect.assignmentChosen{
+  opacity:.82;
+  border-color:rgba(255,20,147,.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.48),
+    inset 0 -1px 0 rgba(255,255,255,.12),
+    0 0 13px rgba(255,20,147,.25);
+}
+
+.fingerRect{
+  position:absolute;
+  left:0;
+  top:0;
+  transform-origin:center center;
+  border-radius:999px;
+  background:
+    linear-gradient(180deg,
+      rgba(248,252,255,.30) 0%,
+      rgba(232,239,247,.22) 34%,
+      rgba(222,232,243,.18) 62%,
+      rgba(208,222,238,.16) 100%);
+  border:1px solid rgba(255,255,255,.26);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -1px 0 rgba(255,255,255,.08),
+    0 0 12px rgba(255,255,255,.08);
+  backdrop-filter:blur(9px) saturate(138%);
+  -webkit-backdrop-filter:blur(9px) saturate(138%);
+  opacity:.42;
+  transition:
+    left .46s cubic-bezier(.22,.72,.24,1),
+    top .46s cubic-bezier(.22,.72,.24,1),
+    width .46s cubic-bezier(.22,.72,.24,1),
+    height .46s cubic-bezier(.22,.72,.24,1),
+    transform .46s cubic-bezier(.22,.72,.24,1),
+    opacity .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+}
+.fingerRect.engaged{
+  opacity:.58;
+  border-color:rgba(255,255,255,.36);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -1px 0 rgba(255,255,255,.10),
+    0 0 14px rgba(255,255,255,.11);
+}
+.fingerMark{z-index:32}
+.demoAction{
+  width:92px;
+  height:30px;
+}
+
+/* Playback transition overlay */
+.movementSvg{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  overflow:visible;
+  z-index:24;
+}
+.moveLabel{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  z-index:26;
+  pointer-events:none;
+  padding:3px 5px;
+  border-radius:7px;
+  background:rgba(7,10,16,.90);
+  border:1px solid rgba(255,20,147,.72);
+  color:#fff;
+  font-size:9px;
+  font-weight:800;
+  line-height:1;
+  white-space:nowrap;
+  box-shadow:0 2px 8px rgba(0,0,0,.42);
+}
+
+/* Controls */
+.sel{
+  width:92px;
+  height:30px;
+  border:1px solid rgba(255,255,255,.30);
+  border-radius:9px;
+  background:linear-gradient(180deg,#0d1420,#080c13);
+  color:#f7fbff;
+  font-size:11px;
+  font-weight:700;
+  text-align:center;
+  text-align-last:center;
+  padding:0 4px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.sidebarSection{
+  width:92px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.sectionLabel{
+  font-size:8px;
+  line-height:1;
+  letter-spacing:.9px;
+  text-transform:uppercase;
+  color:#95a3b6;
+  font-weight:800;
+  text-align:left;
+  padding-left:1px;
+}
+.sidebarSeparator{
+  width:92px;
+  height:1px;
+  background:rgba(215,226,242,.18);
+  flex:0 0 1px;
+}
+
+.noteTool,
+.moveBtn{
+  width:92px;
+  height:34px;
+  border-radius:9px;
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#eef4fb;
+  padding:0 7px;
+  font-size:10px;
+  font-weight:800;
+  line-height:1;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+  transition:border-color .12s ease,box-shadow .12s ease,background .12s ease,transform .12s ease;
+}
+.noteTool:active,.moveBtn:active{transform:translateY(1px)}
+
+.frameworkTool{
+  border:1px solid rgba(33,240,125,.72);
+}
+.frameworkTool.on{
+  background:linear-gradient(180deg,rgba(25,63,47,.98),rgba(13,35,27,.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(33,240,125,.42),
+    0 0 10px rgba(33,240,125,.16);
+}
+
+.dynamicTool{
+  border:1px solid rgba(255,20,147,.72);
+}
+.dynamicTool.on{
+  background:linear-gradient(180deg,rgba(76,24,63,.98),rgba(41,12,34,.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,20,147,.42),
+    0 0 10px rgba(255,20,147,.18);
+}
+
+.movementStack{
+  width:92px;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.moveBtn{
+  border:1px solid rgba(214,230,255,.16);
+}
+.moveBtn.on{
+  border-color:rgba(255,20,147,.82);
+  background:linear-gradient(180deg,rgba(78,25,64,.96),rgba(42,13,34,.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,20,147,.55),
+    0 0 9px rgba(255,20,147,.17);
+}
+
+.actionrow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+  width:92px;
+}
+.action{
+  height:30px;
+  border-radius:8px;
+  border:1px solid rgba(214,230,255,.16);
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#eef4fb;
+  font-size:9px;
+  font-weight:800;
+  padding:0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.action:active{transform:translateY(1px)}
+
+.sequenceWrap{
+  width:92px;
+  flex:1 1 auto;
+  min-height:140px;
+  max-height:300px;
+  display:flex;
+  flex-direction:column;
+  border-radius:12px;
+  border:1px solid rgba(210,226,255,.11);
+  background:rgba(7,11,18,.76);
+  overflow:hidden;
+}
+.sequenceTitle{
+  flex:0 0 auto;
+  padding:6px 7px 5px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  font-size:8px;
+  line-height:1;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+  color:#8e9cb0;
+  font-weight:800;
+  text-align:left;
+}
+.eventpanel{
+  width:100%;
+  flex:1 1 auto;
+  min-height:0;
+  overflow:auto;
+  padding:2px 6px 5px;
+  background:transparent;
+  border:0;
+}
+.event{
+  padding:6px 2px;
+  border-bottom:1px solid rgba(255,255,255,.055);
+  font-size:8.4px;
+  line-height:1.16;
+  color:#d2dbe8;
+  cursor:pointer;
+  border-radius:5px;
+}
+.event:last-child{border-bottom:0}
+.event:hover{background:rgba(255,255,255,.04)}
+.event.selected{
+  background:rgba(74,163,255,.13);
+  box-shadow:inset 2px 0 0 rgba(112,178,255,.85);
+  color:#fff;
+}
+.event .n{
+  color:#6f7f94;
+  margin-right:3px;
+  font-variant-numeric:tabular-nums;
+}
+
+.modeToggle{
+  width:92px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  overflow:hidden;
+  border:1px solid rgba(210,226,255,.12);
+  border-radius:9px;
+  background:#090e16;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.modeToggle button{
+  height:28px;
+  border:0;
+  background:transparent;
+  color:#8492a6;
+  font-size:8.5px;
+  font-weight:800;
+  padding:0;
+}
+.modeToggle button.on{
+  background:linear-gradient(180deg,#edf3fb,#dbe5f2);
+  color:#07101b;
+}
+
+.playbar{
+  width:92px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+}
+.progress{
+  width:92px;
+  height:4px;
+  background:#080d15;
+  border-radius:99px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.07);
+}
+.progressFill{
+  height:100%;
+  width:0%;
+  background:var(--pink);
+}
+
+.playerOnly{display:none}
+body.player .adminOnly{display:none!important}
+body.player .playerOnly{display:grid}
+
+/* === 0.35 reusable clip prototype === */
+
+/* Open strings are phantom positions: colored rings, never solid finger dots. */
+.frameworkMark.openPhantom.in{
+  background:transparent;
+  color:transparent;
+  border:4px solid var(--green);
+  box-shadow:0 0 10px rgba(33,240,125,.42),0 3px 8px rgba(0,0,0,.4);
+}
+.frameworkMark.openPhantom.out{
+  background:transparent;
+  color:transparent;
+  border:4px solid var(--red);
+  box-shadow:0 0 10px rgba(255,77,93,.42),0 3px 8px rgba(0,0,0,.4);
+}
+.fingerMark.openPhantom{
+  background:transparent;
+  color:transparent;
+  border:4px solid var(--pink);
+  box-shadow:0 0 12px rgba(255,20,147,.62),0 3px 8px rgba(0,0,0,.42);
+}
+
+.playerClipControls{
+  display:none;
+  gap:7px;
+  width:100%;
+}
+body.player .playerClipControls{
+  display:grid;
+}
+.playerClipControls .action,
+.playerClipControls .clipKeyBtn{
+  width:100%;
+}
+
+.clipKeyWrap{
+  position:relative;
+  width:100%;
+}
+.clipKeyBtn{
+  min-height:36px;
+  border-radius:10px;
+  border:1px solid rgba(210,226,255,.18);
+  background:linear-gradient(180deg,rgba(33,44,63,.96),rgba(16,23,35,.96));
+  color:var(--text);
+  font-weight:800;
+  cursor:pointer;
+}
+.clipKeyMenu{
+  display:none;
+  position:absolute;
+  left:0;
+  top:calc(100% + 5px);
+  width:100%;
+  padding:6px;
+  border-radius:12px;
+  background:rgba(12,18,28,.98);
+  border:1px solid rgba(112,178,255,.45);
+  box-shadow:0 14px 34px rgba(0,0,0,.5);
+  z-index:200;
+  gap:5px;
+}
+.clipKeyMenu.on{
+  display:grid;
+}
+.clipKeyChoice{
+  min-height:30px;
+  border:1px solid rgba(210,226,255,.13);
+  border-radius:8px;
+  background:rgba(26,36,52,.96);
+  color:var(--text);
+  font-weight:750;
+  cursor:pointer;
+}
+.clipKeyChoice.on{
+  border-color:rgba(255,20,147,.76);
+  box-shadow:inset 0 0 0 1px rgba(255,20,147,.35);
+}
+
+.clipDialog{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.48);
+  z-index:1000;
+  padding:20px;
+}
+.clipDialog.on{
+  display:flex;
+}
+.clipDialogCard{
+  width:min(360px,calc(100vw - 40px));
+  border-radius:18px;
+  background:linear-gradient(180deg,#1d2839,#101722);
+  border:1px solid rgba(112,178,255,.55);
+  box-shadow:0 28px 80px rgba(0,0,0,.64);
+  padding:18px;
+}
+.clipDialogTitle{
+  font-size:17px;
+  font-weight:900;
+  margin-bottom:8px;
+}
+.clipDialogText{
+  font-size:13px;
+  line-height:1.4;
+  color:var(--text-muted);
+  margin-bottom:14px;
+}
+.clipDialogActions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+.clipDialogActions button{
+  min-height:38px;
+  border-radius:10px;
+  border:1px solid rgba(210,226,255,.18);
+  background:linear-gradient(180deg,rgba(34,46,66,.98),rgba(17,24,36,.98));
+  color:var(--text);
+  font-weight:800;
+  cursor:pointer;
+}
+.clipDialogActions .primary{
+  border-color:rgba(255,20,147,.70);
+}
+
+.clipVariantTag{
+  display:none;
+  font-size:10px;
+  line-height:1.1;
+  text-align:center;
+  color:var(--text-muted);
+  margin-top:2px;
+}
+body.player .clipVariantTag{
+  display:block;
+}
+
+
+#fingerAssignMark.openPhantom{
+  background:transparent!important;
+  color:transparent!important;
+  border:4px solid var(--pink)!important;
+  box-shadow:0 0 12px rgba(255,20,147,.62),0 3px 8px rgba(0,0,0,.42)!important;
+}
+
+
+/* === 0.37 chord integration === */
+#chordBtn.ready{
+  border-color:rgba(255,20,147,.68);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,20,147,.22),
+    0 0 9px rgba(255,20,147,.12);
+}
+#chordBtn:disabled{
+  opacity:.38;
+  cursor:default;
+}
+.chordBarreLine{
+  position:absolute;
+  height:10px;
+  border-radius:999px;
+  transform:translateY(-50%);
+  background:rgba(255,20,147,.88);
+  box-shadow:
+    0 0 12px rgba(255,20,147,.45),
+    0 2px 8px rgba(0,0,0,.34);
+  pointer-events:none;
+  z-index:28;
+}
+.chordConfirmPulse{
+  animation:chordConfirmPulse .42s ease-out;
+}
+@keyframes chordConfirmPulse{
+  0%{filter:brightness(1)}
+  45%{filter:brightness(1.85)}
+  100%{filter:brightness(1)}
+}
+
+
+/* === 0.38 prototype-style chord fingering === */
+.fingerMark.chordUnassigned{
+  background:var(--green);
+  color:white;
+  border:0;
+  box-shadow:0 0 10px rgba(33,240,125,.42),0 3px 8px rgba(0,0,0,.4);
+}
+.fingerMark.chordSelected{
+  box-shadow:
+    0 0 0 3px rgba(255,255,255,.96),
+    0 0 16px rgba(255,20,147,.72),
+    0 3px 8px rgba(0,0,0,.45);
+}
+body.fingeringAssignMode.chordSelectingNote .fingerRect{
+  pointer-events:none !important;
+  opacity:.38 !important;
+}
+body.fingeringAssignMode.chordChoosingFinger .fingerRect{
+  pointer-events:auto;
+}
+body.fingeringAssignMode #fingerLayer{
+  /* Let fretboard taps pass through the empty parts of the finger layer. */
+  pointer-events:none;
+}
+body.fingeringAssignMode .fingerRect{
+  pointer-events:auto;
+}
+
+
+/* === 0.42 chord finger touch capture === */
+/* In chord finger-choice mode, transformed finger rectangles are visual only.
+   A document-level capture listener resolves the tap against their geometry. */
+body.fingeringAssignMode.chordChoosingFinger .fingerRect{
+  pointer-events:none !important;
+}
+
+
+/* === 0.44 strict two-step chord assignment === */
+
+/* Step 1: choosing a chord NOTE.
+   Finger graphics must never steal the note tap, even when visually on top. */
+body.fingeringAssignMode.chordSelectingNote .fingerRect{
+  pointer-events:none !important;
+}
+
+/* Step 2: choosing a FINGER.
+   Chord fingers are still resolved by document-level geometric hit testing,
+   so the transformed rectangles themselves remain visual only. */
+body.fingeringAssignMode.chordChoosingFinger .fingerRect{
+  pointer-events:none !important;
+}
+
+
+/* === 0.47 persistent editable fingering === */
+.event.fingeringTargetRow{
+  box-shadow:inset 2px 0 0 rgba(255,20,147,.28);
+}
+.event.fingeringTargetRow.selected{
+  box-shadow:
+    inset 2px 0 0 rgba(112,178,255,.92),
+    inset 4px 0 0 rgba(255,20,147,.32);
+}
+
+#fingeringConfirmDialog .clipDialogCard{
+  width:min(350px,calc(100vw - 40px));
+}
+
+
+/* === 0.49 single author-mode toggle === */
+.authorModeBtn{
+  width:92px;
+  height:34px;
+  border-radius:9px;
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#eef4fb;
+  padding:0 7px;
+  font-size:10px;
+  font-weight:800;
+  line-height:1;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+  transition:border-color .12s ease,box-shadow .12s ease,background .12s ease,transform .12s ease;
+}
+.authorModeBtn:active{transform:translateY(1px)}
+.authorModeBtn.mode-framework{
+  border:1px solid rgba(33,240,125,.72);
+  background:linear-gradient(180deg,rgba(25,63,47,.98),rgba(13,35,27,.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(33,240,125,.42),
+    0 0 10px rgba(33,240,125,.16);
+}
+.authorModeBtn.mode-played{
+  border:1px solid rgba(255,20,147,.72);
+  background:linear-gradient(180deg,rgba(76,24,63,.98),rgba(41,12,34,.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,20,147,.42),
+    0 0 10px rgba(255,20,147,.18);
+}
+.authorModeBtn.mode-fingering{
+  border:1px solid rgba(112,178,255,.78);
+  background:linear-gradient(180deg,rgba(28,52,78,.98),rgba(14,29,47,.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(112,178,255,.42),
+    0 0 10px rgba(112,178,255,.16);
+}
+
+
+/* === 0.50 direct historical editing for Framework / Played Notes === */
+.event.authorEditableRow{
+  box-shadow:inset 2px 0 0 rgba(255,255,255,.10);
+}
+.event.authorEditableRow.frameworkEditable{
+  box-shadow:inset 2px 0 0 rgba(33,240,125,.28);
+}
+.event.authorEditableRow.playedEditable{
+  box-shadow:inset 2px 0 0 rgba(255,20,147,.28);
+}
+.event.authorEditableRow.selected{
+  background:rgba(74,163,255,.15);
+  box-shadow:
+    inset 2px 0 0 rgba(112,178,255,.95),
+    inset 4px 0 0 rgba(255,255,255,.10);
+}
+
+.editTargetRing,
+.editOriginRing{
+  position:absolute;
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:transparent;
+  pointer-events:none;
+  z-index:32;
+}
+.editTargetRing{
+  border:3px solid rgba(255,255,255,.96);
+  pointer-events:auto;
+  cursor:pointer;
+  touch-action:none;
+  box-shadow:
+    0 0 0 2px rgba(74,163,255,.32),
+    0 0 12px rgba(255,255,255,.30);
+}
+.editOriginRing{
+  border:2px dashed rgba(255,255,255,.75);
+}
+
+
+/* === 0.54 independent Admin / Player pitch-label modes === */
+.labelModeBtn{
+  width:92px;
+  min-height:30px;
+  border-radius:9px;
+  border:1px solid rgba(210,226,255,.18);
+  background:linear-gradient(180deg,rgba(33,44,63,.96),rgba(16,23,35,.96));
+  color:var(--text);
+  font-size:10px;
+  font-weight:800;
+  line-height:1.05;
+  cursor:pointer;
+  padding:4px 5px;
+}
+.playerClipControls .labelModeBtn{
+  width:100%;
+  min-height:36px;
+}
+.frameworkMark.longLabel,
+.fingerMark.longLabel,
+#fingerAssignMark.longLabel{
+  font-size:8px;
+  letter-spacing:-.45px;
+}
+
+/* Open-string positions remain phantom rings, but their pitch label is visible. */
+.frameworkMark.openPhantom.in{
+  color:var(--green);
+}
+.frameworkMark.openPhantom.out{
+  color:var(--red);
+}
+.fingerMark.openPhantom,
+#fingerAssignMark.openPhantom{
+  color:var(--pink)!important;
+}
+
+
+/* === 0.57 pre-bend release === */
+.fingerMark.bendRing.preBendPitchRing{
+  color:var(--pink);
+  font-size:9px;
+  font-weight:800;
+}
+
+
+/* === 0.61 score timing phase 1 === */
+.scoreSection{
+  width:100%;
+  margin-top:12px;
+  border:1px solid rgba(210,226,255,.14);
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(18,26,38,.82),rgba(8,12,19,.86));
+  box-shadow:0 14px 34px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.05);
+  overflow:hidden;
+}
+.scoreToolbar{
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:6px 8px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.scoreTitle{
+  font-size:9px;
+  line-height:1;
+  font-weight:800;
+  letter-spacing:.55px;
+  text-transform:uppercase;
+  color:#aebbd0;
+  white-space:nowrap;
+}
+.durationEditor{
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+.durationEditor button{
+  min-width:30px;
+  height:26px;
+  border-radius:7px;
+  border:1px solid rgba(214,230,255,.18);
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#f3f7fd;
+  font-weight:800;
+  padding:0 6px;
+}
+.durationEditor button:disabled{
+  opacity:.30;
+}
+#durationValue{
+  min-width:42px;
+  font-size:17px;
+  line-height:1;
+}
+.scoreViewport{
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  touch-action:pan-x;
+  background:rgba(244,246,239,.96);
+}
+.scoreSvg{
+  display:block;
+  height:126px;
+  min-width:100%;
+}
+.scoreEvent{
+  cursor:pointer;
+}
+.scoreSelection{
+  fill:transparent;
+  stroke:none;
+}
+.scoreEvent .scoreHit{
+  fill:transparent;
+  pointer-events:all;
+}
+.scoreEvent.selected .scoreSelection{
+  fill:rgba(74,163,255,.14);
+  stroke:rgba(60,132,214,.82);
+  stroke-width:1.2;
+}
+.scoreEvent.playing .scoreSelection{
+  fill:rgba(255,20,147,.10);
+  stroke:rgba(255,20,147,.75);
+  stroke-width:1.2;
+}
+.scoreMoveTag{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:8px;
+  font-weight:800;
+  fill:#2d3440;
+}
+.scoreMeasureNumber{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:7px;
+  fill:#737b84;
+}
+.scoreRest{
+  font-family:"Apple Symbols","Noto Music","Segoe UI Symbol",serif;
+  font-size:24px;
+  fill:#111;
+}
+.scoreClef{
+  font-family:"Apple Symbols","Noto Music","Segoe UI Symbol",serif;
+  font-size:46px;
+  fill:#111;
+}
+.scoreTime{
+  font-family:Georgia,serif;
+  font-size:17px;
+  font-weight:700;
+  fill:#111;
+}
+.restBtn{
+  width:92px;
+  height:34px;
+  border-radius:9px;
+  border:1px solid rgba(214,230,255,.18);
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#eef4fb;
+  padding:0 7px;
+  font-size:10px;
+  font-weight:800;
+  line-height:1;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.restBtn:active{transform:translateY(1px)}
+
+
+/* === 0.63 score-on-demand timing workflow === */
+.scoreToggleBtn{
+  width:92px;
+  height:34px;
+  border-radius:9px;
+  border:1px solid rgba(214,230,255,.18);
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#eef4fb;
+  padding:0 7px;
+  font-size:10px;
+  font-weight:800;
+  line-height:1;
+  text-align:left;
+  cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035);
+}
+.scoreToggleBtn.on{
+  border-color:rgba(112,178,255,.78);
+  background:linear-gradient(180deg,rgba(28,52,78,.98),rgba(14,29,47,.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(112,178,255,.40),
+    0 0 10px rgba(112,178,255,.14);
+}
+
+
+/* === 0.64 large score popup === */
+.scoreSection{
+  position:fixed;
+  inset:0;
+  z-index:7000;
+  width:auto;
+  margin:0;
+  padding:
+    max(12px,env(safe-area-inset-top))
+    max(12px,env(safe-area-inset-right))
+    max(12px,env(safe-area-inset-bottom))
+    max(12px,env(safe-area-inset-left));
+  border:0;
+  border-radius:0;
+  background:rgba(2,4,8,.90);
+  box-shadow:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.scoreSection[hidden]{
+  display:none!important;
+}
+.scorePopupCard{
+  width:min(1100px,100%);
+  height:min(78vh,610px);
+  min-height:330px;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border:1px solid rgba(210,226,255,.20);
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(24,32,46,.99),rgba(8,12,19,.99));
+  box-shadow:0 28px 80px rgba(0,0,0,.72),inset 0 1px 0 rgba(255,255,255,.07);
+}
+.scoreToolbar{
+  min-height:52px;
+  flex:0 0 auto;
+  padding:8px 10px;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.scoreTitle{
+  font-size:11px;
+}
+.scoreToolbarActions{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-left:auto;
+}
+.scoreToolbar .durationEditor button{
+  min-width:38px;
+  height:34px;
+  font-size:15px;
+}
+.scoreToolbar #durationValue{
+  min-width:48px;
+  font-size:21px;
+}
+.scoreToolbar .restBtn,
+.scoreCloseBtn{
+  width:auto;
+  min-width:58px;
+  height:34px;
+  border-radius:8px;
+  border:1px solid rgba(214,230,255,.20);
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#eef4fb;
+  padding:0 10px;
+  font-size:11px;
+  font-weight:800;
+  cursor:pointer;
+}
+.scoreCloseBtn{
+  font-size:18px;
+  line-height:1;
+  min-width:38px;
+  padding:0;
+}
+.scoreViewport{
+  flex:1 1 auto;
+  min-height:0;
+  display:flex;
+  align-items:center;
+  background:rgba(244,246,239,.985);
+}
+.scoreSvg{
+  display:block;
+  height:260px;
+  min-width:100%;
+  flex:none;
+}
+@media (max-height:560px){
+  .scorePopupCard{
+    height:92vh;
+    min-height:0;
+  }
+  .scoreSvg{
+    height:205px;
+  }
+}
+
+
+/* === 0.65 floating score popup + device-independent rest notation === */
+.scoreSection{
+  background:transparent;
+  align-items:center;
+  justify-content:center;
+  padding:
+    max(8px,env(safe-area-inset-top))
+    max(8px,env(safe-area-inset-right))
+    max(8px,env(safe-area-inset-bottom))
+    max(8px,env(safe-area-inset-left));
+}
+.scorePopupCard{
+  width:min(1120px,calc(100% - 8px));
+  height:min(36vh,330px);
+  min-height:255px;
+  border-radius:16px;
+  will-change:transform;
+}
+.scoreToolbar{
+  min-height:48px;
+  padding:6px 8px;
+  cursor:ns-resize;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.scoreToolbar button{
+  cursor:pointer;
+  touch-action:manipulation;
+}
+.scoreDragHint{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;
+  height:28px;
+  margin-left:2px;
+  font-size:17px;
+  line-height:1;
+  color:#8796aa;
+  font-weight:700;
+  pointer-events:none;
+}
+.scoreViewport{
+  min-height:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+}
+.scoreSvg{
+  height:190px;
+}
+@media (max-height:620px){
+  .scorePopupCard{
+    height:min(46vh,285px);
+    min-height:225px;
+  }
+  .scoreSvg{
+    height:168px;
+  }
+}
+
+
+/* === 0.66 compact floating score === */
+.scorePopupCard{
+  width:min(1120px,calc(100% - 8px));
+  height:178px;
+  min-height:0;
+  max-height:178px;
+  border-radius:14px;
+}
+.scoreToolbar{
+  height:40px;
+  min-height:40px;
+  padding:4px 6px;
+  gap:4px;
+  flex-wrap:nowrap;
+  justify-content:flex-start;
+  overflow:hidden;
+}
+.scoreTitle{
+  flex:0 1 auto;
+  min-width:0;
+  white-space:nowrap;
+  font-size:9px;
+  letter-spacing:.38px;
+}
+.scoreDragHint{
+  flex:0 0 16px;
+  width:16px;
+  height:24px;
+  margin:0 1px 0 0;
+  font-size:14px;
+}
+.scoreToolbar .durationEditor{
+  flex:0 0 auto;
+  gap:2px;
+}
+.scoreToolbar .durationEditor button{
+  min-width:31px;
+  width:31px;
+  height:30px;
+  padding:0;
+  border-radius:7px;
+  font-size:14px;
+}
+.scoreToolbar #durationValue{
+  min-width:38px;
+  width:38px;
+  font-size:18px;
+}
+.scoreToolbarActions{
+  flex:0 0 auto;
+  gap:3px;
+  margin-left:auto;
+}
+.scoreToolbar .restBtn{
+  min-width:44px;
+  width:44px;
+  height:30px;
+  padding:0 5px;
+  font-size:10px;
+  text-align:center;
+}
+.scoreCloseBtn{
+  min-width:31px;
+  width:31px;
+  height:30px;
+  padding:0;
+  font-size:17px;
+}
+.scoreViewport{
+  flex:0 0 136px;
+  height:136px;
+  min-height:136px;
+  align-items:flex-start;
+}
+.scoreSvg{
+  height:132px;
+}
+
+/* Timing selection is shown on the notation itself, not as a tall box. */
+.scoreEvent.selected .scoreSelection,
+.scoreEvent.playing .scoreSelection{
+  fill:transparent;
+  stroke:none;
+}
+.scoreNoteHalo{
+  fill:rgba(255,20,147,0);
+  stroke:rgba(255,20,147,0);
+  stroke-width:0;
+  pointer-events:none;
+}
+.scoreEvent.selected .scoreNoteHalo{
+  fill:rgba(255,20,147,.10);
+  stroke:#ff1493;
+  stroke-width:2.6;
+}
+.scoreEvent.playing .scoreNoteHalo{
+  fill:rgba(255,20,147,.08);
+  stroke:#ff1493;
+  stroke-width:2.2;
+}
+.scoreNoteFilled{
+  fill:#ff1493;
+  stroke:#b60062;
+  stroke-width:1.25;
+}
+.scoreNoteOpen{
+  fill:#f4f6ef;
+  stroke:#ff1493;
+  stroke-width:2.0;
+}
+.scoreNoteStroke{
+  fill:none;
+  stroke:#ff1493;
+  stroke-width:1.55;
+}
+.scoreNoteFlag{
+  fill:none;
+  stroke:#ff1493;
+  stroke-width:2.15;
+  stroke-linecap:round;
+}
+.scoreNoteDot{
+  fill:#ff1493;
+}
+.scoreEvent.selected .scoreNoteFilled{
+  fill:#ff3daf;
+  stroke:#8f004c;
+}
+.scoreEvent.selected .scoreNoteOpen{
+  stroke:#ff1493;
+  stroke-width:2.8;
+}
+
+@media (max-height:620px){
+  .scorePopupCard{
+    height:168px;
+    min-height:0;
+    max-height:168px;
+  }
+  .scoreViewport{
+    flex-basis:126px;
+    height:126px;
+    min-height:126px;
+  }
+  .scoreSvg{
+    height:122px;
+  }
+}
+
+
+/* === 0.67 timing feedback belongs on the fretboard === */
+
+/* Conventional black score notation. */
+.scoreNoteHalo{
+  display:none!important;
+}
+.scoreNoteFilled,
+.scoreEvent.selected .scoreNoteFilled,
+.scoreEvent.playing .scoreNoteFilled{
+  fill:#111!important;
+  stroke:#111!important;
+  stroke-width:1.25!important;
+}
+.scoreNoteOpen,
+.scoreEvent.selected .scoreNoteOpen,
+.scoreEvent.playing .scoreNoteOpen{
+  fill:#f4f6ef!important;
+  stroke:#111!important;
+  stroke-width:1.6!important;
+}
+.scoreNoteStroke,
+.scoreEvent.selected .scoreNoteStroke,
+.scoreEvent.playing .scoreNoteStroke,
+.scoreNoteFlag,
+.scoreEvent.selected .scoreNoteFlag,
+.scoreEvent.playing .scoreNoteFlag{
+  stroke:#111!important;
+}
+.scoreNoteDot,
+.scoreEvent.selected .scoreNoteDot,
+.scoreEvent.playing .scoreNoteDot{
+  fill:#111!important;
+}
+
+/* Score-timing fretboard view: all authored positions are pink. */
+.scoreFingerPosition{
+  opacity:.82;
+}
+
+/* The timing event selected on the score is highlighted on the fretboard. */
+.scoreFingerPosition.scoreFingerActive{
+  opacity:1;
+  width:29px;
+  height:29px;
+  border:3px solid #fff;
+  box-shadow:
+    0 0 0 3px var(--pink),
+    0 0 18px rgba(255,20,147,.95),
+    0 4px 10px rgba(0,0,0,.50);
+  z-index:42;
+}
+.scoreFingerPosition.scoreFingerActive.openPhantom{
+  background:transparent;
+  border:5px solid var(--pink);
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 18px rgba(255,20,147,.95),
+    0 4px 10px rgba(0,0,0,.50);
+}
+
+
+/* === 0.68 score focus mode === */
+
+/* Restore the original score-event highlight. */
+.scoreEvent.selected .scoreSelection{
+  fill:rgba(74,163,255,.14)!important;
+  stroke:rgba(60,132,214,.82)!important;
+  stroke-width:1.2!important;
+}
+.scoreEvent.playing .scoreSelection{
+  fill:rgba(255,20,147,.10)!important;
+  stroke:rgba(255,20,147,.75)!important;
+  stroke-width:1.2!important;
+}
+
+/* While rhythm/score editing is active, remove all ordinary authoring controls.
+   The fretboard remains visible at full prominence behind the floating score. */
+body.scoreFocus .leftcol,
+body.scoreFocus .apptitle{
+  display:none!important;
+}
+body.scoreFocus .layout{
+  gap:0;
+}
+body.scoreFocus .app{
+  padding-left:10px;
+  padding-right:10px;
+}
+
+
+/* === 0.72 compact movement layout === */
+#movementSection[hidden],
+#movementSeparator[hidden]{
+  display:none!important;
+}
+
+.movementStack{
+  width:92px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:5px;
+}
+
+.movementStack .moveBtn,
+.movementStack .scoreToggleBtn{
+  width:100%;
+  min-width:0;
+  height:34px;
+  padding:0 4px;
+  text-align:center;
+  font-size:9px;
+}
+
+.movementStack .moveWide{
+  grid-column:1 / -1;
+  font-size:10px;
+}
+
+
+/* === 0.73 dynamic sequence frame === */
+.sequenceWrap{
+  flex:0 0 auto;
+  min-height:72px;
+  max-height:none;
+}
+
+
+/* === 0.78 standard guitar ottava notation === */
+.scoreClefOctave{
+  font-family:Georgia,serif;
+  font-size:9px;
+  font-weight:700;
+  fill:#111;
+}
+.scoreOttavaText{
+  font-family:Georgia,serif;
+  font-size:9px;
+  font-style:italic;
+  font-weight:700;
+  fill:#111;
+}
+.scoreOttavaLine{
+  fill:none;
+  stroke:#111;
+  stroke-width:1.0;
+  stroke-dasharray:4 3;
+}
+
+
+/* === 0.85 Snippet Reader: player-only shell === */
+.readerRuntimeSupport{
+  display:none!important;
+}
+
+body.reader .readerSnippetSection{
+  margin-bottom:8px;
+}
+
+body.reader .readerSnippetSelect{
+  width:100%;
+}
+
+body.reader .readerStatus{
+  min-height:14px;
+  margin-top:4px;
+  font-size:10px;
+  line-height:1.25;
+  color:var(--text-muted);
+}
+
+/* Reader contains only the controls that belong to playback. */
+body.reader .playerOnly{
+  display:grid;
+}
+
+body.reader .playerClipControls{
+  display:grid!important;
+}

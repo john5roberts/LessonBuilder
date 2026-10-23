@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lesson Builder 0.84 — Shared Player Runtime</title>
+<link rel="stylesheet" href="player/player.css">
+</head>
+<body>
+<div class="app">
+  <div class="apptitle">Lesson Builder</div>
+
+  <div class="layout">
+    <div class="leftcol">
+      <div class="modeToggle">
+        <button id="adminTab" class="on">Admin</button>
+        <button id="playerTab">Player</button>
+      </div>
+
+      <div class="sidebarSection readerOnly readerSnippetSection">
+        <div class="sectionLabel">Snippet</div>
+        <select id="readerSnippetSelect" class="sel readerSnippetSelect"></select>
+        <div id="readerStatus" class="readerStatus"></div>
+      </div>
+
+
+      <div class="sidebarSection adminOnly">
+        <div class="sectionLabel">Key</div>
+        <select id="keySel" class="sel"></select>
+        <button id="adminLabelBtn" class="labelModeBtn" type="button">Labels: Interval</button>
+      </div>
+
+      <div class="sidebarSeparator adminOnly"></div>
+
+      <div class="sidebarSection adminOnly">
+        <div class="sectionLabel">Mode</div>
+        <button id="authorModeBtn" class="authorModeBtn mode-framework" type="button">Framework</button>
+      </div>
+
+      <div class="sidebarSeparator adminOnly"></div>
+
+      <div class="sidebarSection adminOnly">
+        <div class="sectionLabel">Edit</div>
+        <div class="actionrow">
+          <button id="undoBtn" class="action">Undo</button>
+          <button id="clearBtn" class="action">Clear</button>
+        </div>
+      </div>
+
+      <div id="movementSeparator" class="sidebarSeparator adminOnly" hidden></div>
+
+      <div id="movementSection" class="sidebarSection adminOnly" hidden>
+        <div class="sectionLabel">Movement</div>
+        <div class="movementStack">
+          <button class="moveBtn moveWide" data-move="hammer-on">Hammer-on</button>
+          <button class="moveBtn moveWide" data-move="pull-off">Pull-off</button>
+          <button class="moveBtn" data-move="bend">Bend</button>
+          <button class="moveBtn" data-move="slide">Slide</button>
+          <button id="chordBtn" class="moveBtn" data-move="chord" disabled>Chord</button>
+          <button id="scoreToggleBtn" class="scoreToggleBtn" type="button">Score</button>
+        </div>
+      </div>
+
+      <div id="status" hidden></div>
+
+      <div class="sequenceWrap adminOnly">
+        <div class="sequenceTitle">Sequence</div>
+        <div id="eventPanel" class="eventpanel"></div>
+      </div>
+
+      <div class="playbar playerOnly">
+        <button id="playBtn" class="action">Play</button>
+        <button id="stopBtn" class="action">Stop</button>
+      </div>
+      <div class="progress playerOnly"><div id="progressFill" class="progressFill"></div></div>
+
+      <div class="playerClipControls">
+        <div class="sidebarSeparator"></div>
+        <div class="sectionLabel">Clip</div>
+
+        <div class="clipKeyWrap">
+          <button id="playerKeyBtn" class="clipKeyBtn" type="button">Key: C/Am</button>
+          <div id="playerKeyMenu" class="clipKeyMenu"></div>
+        </div>
+        <button id="playerLabelBtn" class="labelModeBtn" type="button">Labels: Interval</button>
+        <div id="clipVariantTag" class="clipVariantTag">Original position</div>
+
+        <button id="createOpenBtn" class="action" type="button">Create Open String Version</button>
+        <button id="approveClipBtn" class="action" type="button">Approve Clip</button>
+        <button id="recallClipBtn" class="action" type="button">Recall</button>
+      </div>
+    </div>
+
+    <div class="maincol">
+      <div class="wrap">
+        <div id="shell" class="shell">
+          <div id="openrow" class="openrow"></div>
+          <div class="nut"></div>
+          <div id="board" class="board"></div>
+          <svg id="moveSvg" class="movementSvg"></svg>
+          <div id="fingerLayer">
+            <div id="fingerRect0" class="fingerRect" data-finger-choice="I"></div>
+            <div id="fingerRect1" class="fingerRect" data-finger-choice="M"></div>
+            <div id="fingerRect2" class="fingerRect" data-finger-choice="R"></div>
+            <div id="fingerRect3" class="fingerRect" data-finger-choice="P"></div>
+          </div>
+          <div id="fingerAssignMark"></div>
+          <div id="fingerAssignDestinationMark"></div>
+          <div id="fingerAssignPopup" aria-hidden="true">
+            <div id="fingerAssignMovement"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="scoreSection" class="scoreSection" hidden aria-hidden="true">
+    <div id="scorePopupCard" class="scorePopupCard" role="dialog" aria-modal="true" aria-label="Score timing editor">
+      <div id="scoreToolbar" class="scoreToolbar">
+        <div class="scoreTitle">Treble Clef · 4/4</div>
+        <div class="scoreDragHint" aria-hidden="true">↕</div>
+        <div id="durationEditor" class="durationEditor">
+          <button id="durationMinus" type="button" disabled>−</button>
+          <button id="durationValue" type="button" disabled>♩</button>
+          <button id="durationPlus" type="button" disabled>+</button>
+        </div>
+        <div class="scoreToolbarActions">
+          <button id="restBtn" class="restBtn" type="button">Rest</button>
+          <button id="scoreCloseBtn" class="scoreCloseBtn" type="button" aria-label="Close score">×</button>
+        </div>
+      </div>
+      <div id="scoreViewport" class="scoreViewport">
+        <svg id="scoreSvg" class="scoreSvg" aria-label="Continuous 4/4 score"></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="clipDialog" class="clipDialog" aria-hidden="true">
+  <div class="clipDialogCard">
+    <div id="clipDialogTitle" class="clipDialogTitle">Open-string version required</div>
+    <div id="clipDialogText" class="clipDialogText">
+      You must include an open-string version before this clip can be approved.
+    </div>
+    <div class="clipDialogActions">
+      <button id="clipDialogCancel" type="button">Cancel</button>
+      <button id="clipDialogPrimary" class="primary" type="button">Create Open String Version</button>
+    </div>
+  </div>
+</div>
+
+<div id="fingeringConfirmDialog" class="clipDialog" aria-hidden="true">
+  <div class="clipDialogCard">
+    <div class="clipDialogTitle">Confirm chord fingering</div>
+    <div class="clipDialogText">
+      Check the completed hand shape. Continue to accept this chord fingering,
+      or keep editing to change an assignment or use Undo.
+    </div>
+    <div class="clipDialogActions">
+      <button id="fingeringConfirmEdit" type="button">Keep Editing</button>
+      <button id="fingeringConfirmContinue" class="primary" type="button">Continue</button>
+    </div>
+  </div>
+</div>
+
+
+<script src="player/player-core.js"></script>
+</body>
+</html>

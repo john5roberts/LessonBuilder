@@ -1719,3 +1719,7 @@ body.reader .playerOnly{
 body.reader .playerClipControls{
   display:grid!important;
 }
+
+/* 0.91: isolated publishing status styling */
+.publishStatus{font-size:12px;line-height:1.45;margin-top:5px;overflow-wrap:anywhere;color:var(--muted,#88919c)}
+.publishStatus.error{color:#d36b6b}

@@ -52,3 +52,10 @@ native media is used whenever the AudioContext is unavailable or suspended.
 - This patch targets sound only. Animation smoothness and open-position conversion have NOT been modified or certified.
 
 After uploading all repository files, hard-refresh the GitHub Pages site and test placing a Played Note, chord audition, and Player playback on the target device.
+
+
+## 0.91 direct publishing integration
+- Adds one Publish Snippet button to Lesson Builder, not Reader.
+- Keeps the previously tested 0.90 Player runtime byte-identical.
+- Adds external Cloudflare Worker code for GitHub authorization and server-side writes of the snippet and catalog.
+- **Not live until one-time configuration** — see `SETUP-DIRECT-SAVE.md`.

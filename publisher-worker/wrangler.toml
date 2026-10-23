@@ -1,0 +1,9 @@
+name = "guitar-snippet-publisher"
+main = "worker.js"
+compatibility_date = "2026-10-23"
+
+[vars]
+GITHUB_OWNER = "REPLACE_WITH_OWNER"
+GITHUB_REPO = "REPLACE_WITH_REPOSITORY"
+ALLOWED_GITHUB_USER = "REPLACE_WITH_YOUR_GITHUB_USERNAME"
+SITE_URL = "https://REPLACE.github.io/REPOSITORY/index.html"

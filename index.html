@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Lesson Builder 0.90 — Audio Routing Repair</title>
+<title>Lesson Builder 0.91 — Direct Snippet Publishing</title>
 <link rel="stylesheet" href="player/player.css?v=0.90">
 </head>
 <body>
@@ -88,6 +88,8 @@
         <button id="createOpenBtn" class="action" type="button">Create Open String Version</button>
         <button id="approveClipBtn" class="action" type="button">Approve Clip</button>
         <button id="recallClipBtn" class="action" type="button">Recall</button>
+        <button id="publishSnippetBtn" class="action" type="button">Publish Snippet</button>
+        <div id="publishStatus" class="publishStatus" role="status" aria-live="polite"></div>
       </div>
     </div>
 
@@ -165,5 +167,7 @@
 
 
 <script src="player/player-core.js?v=0.90"></script>
+<script src="publish-config.js?v=0.91"></script>
+<script src="player/publish.js?v=0.91"></script>
 </body>
 </html>

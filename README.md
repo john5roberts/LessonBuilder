@@ -34,3 +34,10 @@ This package is now self-contained. It includes seven local guitar WAV samples u
 `samples/guitar/`
 
 Do not omit this folder when uploading to GitHub. The shared runtime still has its Web Audio fallback, and that fallback now explicitly retries after a suspended AudioContext resumes rather than silently dropping the note.
+
+
+## 0.88 hybrid audio repair
+Safari/iOS no longer depends solely on Web Audio for ordinary guitar notes.
+Local WAV samples are played through native HTML media on Apple WebKit.
+Web Audio remains available for continuous articulations such as bends, and
+native media is used whenever the AudioContext is unavailable or suspended.

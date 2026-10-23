@@ -391,6 +391,8 @@
   // AudioContext is not always enough. Start a tiny silent source directly
   // inside the user's tap gesture to unlock later scheduled Web Audio.
   function unlockAudioFromGesture(){
+    primeNativeAudioFromGesture();
+
     const ctx=getAudioCtx();
     if(!ctx) return null;
 
@@ -584,28 +586,143 @@
     return best;
   }
 
+  const IS_APPLE_WEBKIT=(()=>{
+    const ua=navigator.userAgent || '';
+    const vendor=navigator.vendor || '';
+    return /AppleWebKit/i.test(ua) &&
+      (/Apple/i.test(vendor) || /iPhone|iPad|iPod/i.test(ua));
+  })();
+
+  const mediaSampleVoices=[];
+  let mediaAudioPrimed=false;
+
+  function nearestGuitarSampleDef(midi){
+    let best=null;
+    for(const def of GUITAR_SAMPLE_DEFS){
+      const distance=Math.abs(midi-def.midi);
+      if(!best || distance<best.distance) best={def,distance};
+    }
+    return best;
+  }
+
+  function localSampleUrl(def){
+    if(!def || !def.local) return '';
+    try{
+      return new URL(def.local,document.baseURI).href;
+    }catch(_){
+      return def.local;
+    }
+  }
+
+  function cleanupMediaVoice(audio){
+    const i=mediaSampleVoices.indexOf(audio);
+    if(i!==-1) mediaSampleVoices.splice(i,1);
+  }
+
+  function playMediaSampledMidi(midi,volume=.20,duration=.72){
+    const pick=nearestGuitarSampleDef(midi);
+    if(!pick) return false;
+
+    try{
+      const audio=new Audio(localSampleUrl(pick.def));
+      audio.preload='auto';
+      audio.volume=Math.max(0,Math.min(1,volume*2.25));
+
+      // Rate must change pitch for our sparse sample set.
+      try{ audio.preservesPitch=false; }catch(_){}
+      try{ audio.webkitPreservesPitch=false; }catch(_){}
+      try{ audio.mozPreservesPitch=false; }catch(_){}
+
+      const rate=Math.pow(2,(midi-pick.def.midi)/12);
+      audio.playbackRate=Math.max(.5,Math.min(2,rate));
+
+      mediaSampleVoices.push(audio);
+
+      const stopAfter=Math.max(.10,duration||.72)*1000;
+      const timer=setTimeout(()=>{
+        try{ audio.pause(); }catch(_){}
+        cleanupMediaVoice(audio);
+      },stopAfter+80);
+
+      audio.addEventListener('ended',()=>{
+        clearTimeout(timer);
+        cleanupMediaVoice(audio);
+      },{once:true});
+
+      const promise=audio.play();
+      if(promise && typeof promise.catch==='function'){
+        promise.catch(err=>{
+          clearTimeout(timer);
+          cleanupMediaVoice(audio);
+          console.warn('Native guitar audio failed:',err);
+          playFallbackMidi(midi,volume,duration);
+        });
+      }
+
+      return true;
+    }catch(err){
+      console.warn('Native guitar audio unavailable:',err);
+      return false;
+    }
+  }
+
+  function primeNativeAudioFromGesture(){
+    if(mediaAudioPrimed) return;
+    mediaAudioPrimed=true;
+
+    const def=GUITAR_SAMPLE_DEFS.find(d=>d.midi===69) || GUITAR_SAMPLE_DEFS[0];
+    if(!def) return;
+
+    try{
+      const audio=new Audio(localSampleUrl(def));
+      audio.preload='auto';
+      audio.muted=true;
+      audio.volume=0;
+      try{ audio.preservesPitch=false; }catch(_){}
+      try{ audio.webkitPreservesPitch=false; }catch(_){}
+      const p=audio.play();
+
+      const finish=()=>{
+        try{
+          audio.pause();
+          audio.currentTime=0;
+          audio.muted=false;
+        }catch(_){}
+      };
+
+      if(p && typeof p.then==='function'){
+        p.then(finish).catch(()=>{});
+      }else{
+        finish();
+      }
+    }catch(_){}
+  }
+
   function playSampledMidi(midi,volume=.20,duration=.72){
+    // Apple/Safari gets an independent native-WAV path so ordinary notes
+    // no longer depend on Web Audio permission/state.
+    if(IS_APPLE_WEBKIT){
+      return playMediaSampledMidi(midi,volume,duration);
+    }
+
     const ctx=getAudioCtx();
-    if(!ctx) return false;
+    if(!ctx){
+      return playMediaSampledMidi(midi,volume,duration);
+    }
 
     if(ctx.state!=="running"){
       try{
         const p=ctx.resume();
-        if(p && typeof p.then==="function"){
-          p.then(()=>{
-            if(ctx.state==="running"){
-              playSampledMidi(midi,volume,duration);
-            }
-          }).catch(()=>{});
-        }
+        if(p && typeof p.catch==="function") p.catch(()=>{});
       }catch(_){}
-      return false;
+      return playMediaSampledMidi(midi,volume,duration);
     }
 
     const pick=nearestGuitarSample(midi);
-    // If the guitar WAVs are unavailable (common in some iPhone preview
-    // environments), use a built-in Web Audio tone rather than going silent.
-    if(!pick) return playFallbackMidi(midi,volume,duration);
+    if(!pick){
+      if(playMediaSampledMidi(midi,volume,duration)) return true;
+      return playFallbackMidi(midi,volume,duration);
+    }
 
     const now=ctx.currentTime+.005;
     const src=ctx.createBufferSource();
@@ -684,6 +801,11 @@
   function silenceActiveGuitarSources(fade=.025){
     stopActiveBendAudio(fade);
 
+    for(const audio of [...mediaSampleVoices]){
+      try{ audio.pause(); }catch(_){}
+      cleanupMediaVoice(audio);
+    }
+
     const ctx=getAudioCtx();
     const now=ctx ? ctx.currentTime : 0;
 
@@ -728,10 +850,13 @@
     fadeIn=.008
   }={}){
     const ctx=getAudioCtx();
-    if(!ctx || ctx.state!=="running") return false;
+    if(!ctx || ctx.state!=="running"){
+      return playMediaSampledMidi(midi,volume,duration);
+    }
 
     const pick=nearestGuitarSample(midi);
     if(!pick){
+      if(playMediaSampledMidi(midi,volume,duration)) return true;
       return playFallbackMidi(midi,volume*.85,duration);
     }
 
@@ -8655,7 +8780,7 @@
     enterAdmin,
     play:playAll,
     stop:()=>stopPlayback(),
-    version:'0.87-self-contained-audio'
+    version:'0.88-hybrid-audio'
   });
 
 })();

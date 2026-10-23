@@ -1,0 +1,519 @@
+{
+  "format": "guitar-animation-snippet",
+  "version": 1,
+  "sourceKeyPc": 0,
+  "openKeyPc": 7,
+  "openShift": 5,
+  "variants": {
+    "original": {
+      "keyPc": 0,
+      "events": [
+        {
+          "type": "frameworkOn",
+          "s": 0,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 0,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 1,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 1,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 2,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 2,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOn",
+          "s": 0,
+          "f": 5,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "I"
+        },
+        {
+          "type": "fingerOff",
+          "s": 0,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 0,
+          "f": 8,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "P"
+        },
+        {
+          "type": "fingerOff",
+          "s": 0,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 1,
+          "f": 5,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "I"
+        },
+        {
+          "type": "fingerOff",
+          "s": 1,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 1,
+          "f": 7,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "R"
+        },
+        {
+          "type": "fingerOff",
+          "s": 1,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 2,
+          "f": 5,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "I"
+        },
+        {
+          "type": "fingerOff",
+          "s": 2,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 2,
+          "f": 7,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "R"
+        },
+        {
+          "type": "fingerOff",
+          "s": 2,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 3,
+          "f": 5,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "I"
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 3,
+          "f": 7,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "R"
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 4,
+          "f": 5,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "I"
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 4,
+          "f": 8,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "P"
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 5,
+          "f": 5,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "I"
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 5,
+          "f": 8,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "P"
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        }
+      ]
+    },
+    "open": {
+      "keyPc": 7,
+      "events": [
+        {
+          "type": "frameworkOn",
+          "s": 0,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 0,
+          "f": 3,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 1,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 1,
+          "f": 2,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 2,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 2,
+          "f": 2,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 2,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 3,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 3,
+          "play": true
+        },
+        {
+          "type": "fingerOn",
+          "s": 0,
+          "f": 0,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 0,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 0,
+          "f": 3,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "R"
+        },
+        {
+          "type": "fingerOff",
+          "s": 0,
+          "f": 3,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 1,
+          "f": 0,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 1,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 1,
+          "f": 2,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "M"
+        },
+        {
+          "type": "fingerOff",
+          "s": 1,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 2,
+          "f": 0,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 2,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 2,
+          "f": 2,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "M"
+        },
+        {
+          "type": "fingerOff",
+          "s": 2,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 3,
+          "f": 0,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 3,
+          "f": 2,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "M"
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 4,
+          "f": 0,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 4,
+          "f": 3,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "R"
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 3,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 5,
+          "f": 0,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOn",
+          "s": 5,
+          "f": 3,
+          "articulation": "pluck",
+          "durationUnits": 4,
+          "play": true,
+          "finger": "R"
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 3,
+          "play": false
+        }
+      ]
+    }
+  },
+  "id": "box-1-4478cb2c",
+  "title": "Box 1"
+}

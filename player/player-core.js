@@ -699,13 +699,8 @@
   }
 
   function playSampledMidi(midi,volume=.20,duration=.72){
-    // Apple/Safari gets an independent native-WAV path so ordinary notes
-    // no longer depend on Web Audio permission/state.
-    if(IS_APPLE_WEBKIT){
-      return playMediaSampledMidi(midi,volume,duration);
-    }
-
     const ctx=getAudioCtx();
+
     if(!ctx){
       return playMediaSampledMidi(midi,volume,duration);
     }
@@ -718,6 +713,12 @@
       return playMediaSampledMidi(midi,volume,duration);
     }
 
+    /*
+      Web Audio buffer playback is much tighter rhythmically than creating a
+      fresh HTMLAudio element for every note. Use it whenever decoded samples
+      are ready — including Safari. The native WAV path remains the fallback
+      if Safari blocks Web Audio or decoding has not finished.
+    */
     const pick=nearestGuitarSample(midi);
     if(!pick){
       if(playMediaSampledMidi(midi,volume,duration)) return true;
@@ -1336,8 +1337,11 @@
     const ctx=unlockAudioFromGesture() || getAudioCtx();
     if(!ctx) return false;
 
-    // Samples are an enhancement, never a prerequisite for sound.
-    try{ loadGuitarSamples(ctx).catch(()=>{}); }catch(_){}
+    // Start local sample loading immediately after the synchronous unlock.
+    let samplesReady=null;
+    try{
+      samplesReady=loadGuitarSamples(ctx);
+    }catch(_){}
 
     try{
       if(ctx.state==="suspended"){
@@ -1348,6 +1352,21 @@
     }
 
     S.audioUnlocked=(ctx.state==="running");
+
+    /*
+      Give the packaged local WAVs a short, bounded opportunity to decode
+      before playback begins. This avoids uneven HTMLAudio startup latency
+      between successive notes while never making sound depend on decoding.
+    */
+    if(S.audioUnlocked && samplesReady && typeof samplesReady.then==='function'){
+      try{
+        await Promise.race([
+          samplesReady,
+          new Promise(resolve=>setTimeout(resolve,700))
+        ]);
+      }catch(_){}
+    }
+
     return S.audioUnlocked;
   }
 
@@ -1556,6 +1575,46 @@
     return Number.isFinite(min)?min:0;
   }
 
+  function lowestPerformedFretInEvents(events){
+    let min=Infinity;
+
+    for(const e of events || []){
+      if(
+        !e ||
+        e.play===false ||
+        isFrameworkEvent(e) ||
+        e.type===EVENT_TYPE.REST
+      ) continue;
+
+      eachEventPosition(e,p=>{
+        if(Number.isFinite(p.f)){
+          min=Math.min(min,p.f);
+        }
+      });
+    }
+
+    return Number.isFinite(min)?min:0;
+  }
+
+  function performedOpenPositionCount(events){
+    let count=0;
+
+    for(const e of events || []){
+      if(
+        !e ||
+        e.play===false ||
+        isFrameworkEvent(e) ||
+        e.type===EVENT_TYPE.REST
+      ) continue;
+
+      eachEventPosition(e,p=>{
+        if(Number.isFinite(p.f) && p.f===0) count++;
+      });
+    }
+
+    return count;
+  }
+
   function highestFretInEvents(events){
     let max=-Infinity;
     for(const e of events || []){
@@ -1568,12 +1627,27 @@
 
   function shiftEventsByFrets(events,delta){
     const shifted=cloneEvents(events);
+
     for(const e of shifted){
       eachEventPosition(e,p=>{
         p.f+=delta;
       });
     }
-    return shifted;
+
+    /*
+      When an authored framework extends closer to the nut than the actual
+      performed material, transposing the performed phrase to open position
+      can move a few green framework events below fret 0. Those positions do
+      not exist on the guitar, so omit only those framework events. Performed
+      events are protected by lowestPerformedFretInEvents() and therefore
+      remain at fret 0 or above.
+    */
+    return shifted.filter(e=>{
+      if(isFrameworkEvent(e)){
+        return Number.isFinite(e.f) && e.f>=0 && e.f<=TOTAL_FRETS;
+      }
+      return true;
+    });
   }
 
   function clearFingerAssignmentsInEvents(events){
@@ -1606,7 +1680,7 @@
     S.clipDraft[variant]=packet;
 
     if(variant==='original'){
-      const min=lowestFretInEvents(packet.events);
+      const min=lowestPerformedFretInEvents(packet.events);
       S.clipDraft.openShift=min;
     }
 
@@ -1630,7 +1704,7 @@
     if(!S.clipDraft.original) return null;
     const shift=Number.isFinite(S.clipDraft.openShift)
       ? S.clipDraft.openShift
-      : lowestFretInEvents(S.clipDraft.original.events);
+      : lowestPerformedFretInEvents(S.clipDraft.original.events);
     return mod12(S.clipDraft.original.keyPc-shift);
   }
 
@@ -8206,13 +8280,20 @@
 
       timedIndex++;
       S.playbackEventIndex=eventIndex;
-      renderScore();
 
+      /*
+        Begin the musical/visual event before repainting score/status UI.
+        Those repaints now happen inside the event's existing time window
+        instead of creating a small dead gap between events.
+      */
+      const eventPromise=playOne(e,run);
+
+      renderScore();
       const playerLabel=playerEventLabel(e);
       statusEl.innerHTML=`<strong>${timedIndex}/${timedTotal}</strong>${playerLabel?`<br>${playerLabel}`:''}`;
       progressFill.style.width=`${totalUnits?(completedUnits/totalUnits)*100:0}%`;
 
-      await playOne(e,run);
+      await eventPromise;
       completedUnits+=eventDurationUnits(e);
     }
 
@@ -8308,11 +8389,19 @@
       return;
     }
 
-    const shift=lowestFretInEvents(original.events);
+    const shift=lowestPerformedFretInEvents(original.events);
     S.clipDraft.openShift=shift;
 
     const openEvents=shiftEventsByFrets(original.events,-shift);
     clearFingerAssignmentsInEvents(openEvents);
+
+    const openCount=performedOpenPositionCount(openEvents);
+    if(shift>0 && openCount===0){
+      statusEl.innerHTML=
+        '<strong>Open-position conversion failed.</strong><br>'+
+        'No performed note reached fret 0. The original lesson was left unchanged.';
+      return;
+    }
 
     const openKey=mod12(original.keyPc-shift);
     S.clipDraft.open={
@@ -8332,7 +8421,11 @@
     S.author=blankState();
     rebuildAuthor();
 
-    statusEl.innerHTML=`<strong>Open-string version</strong><br>Shifted ${shift} fret${shift===1?'':'s'} toward the nut. Assign fingering to the remaining fretted notes. Open strings are phantom rings and require no finger.`;
+    statusEl.innerHTML=
+      `<strong>Open-string version</strong><br>`+
+      `Shifted ${shift} fret${shift===1?'':'s'} toward the nut. `+
+      `${openCount} performed open-string position${openCount===1?'':'s'} created. `+
+      `Assign fingering to the remaining fretted notes. Open strings are phantom rings and require no finger.`;
 
     // Immediately open fingering assignment as requested.
     startFingeringAssignment();
@@ -8780,7 +8873,7 @@
     enterAdmin,
     play:playAll,
     stop:()=>stopPlayback(),
-    version:'0.88-hybrid-audio'
+    version:'0.89-open-shift-smooth-playback'
   });
 
 })();

@@ -26,3 +26,11 @@ The existing guitar sample lookup paths remain unchanged (`samples/guitar/...` p
 Restores the Fingering state helpers accidentally removed during the chord-movement refactor.
 The Mode cycle is again Framework → Played Notes → Fingering → Framework.
 HTML references use `?v=0.86` cache-busting query strings so GitHub Pages/Safari fetch the repaired runtime.
+
+
+## 0.87 audio repair
+This package is now self-contained. It includes seven local guitar WAV samples under:
+
+`samples/guitar/`
+
+Do not omit this folder when uploading to GitHub. The shared runtime still has its Web Audio fallback, and that fallback now explicitly retries after a suspended AudioContext resumes rather than silently dropping the note.

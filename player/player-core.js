@@ -414,7 +414,24 @@
 
   function playFallbackMidi(midi,volume=.11,duration=.46){
     const ctx=getAudioCtx();
-    if(!ctx || ctx.state!=="running") return false;
+    if(!ctx) return false;
+
+    // Never fail silently merely because Safari is still resuming Web Audio.
+    if(ctx.state!=="running"){
+      try{
+        const resumed=ctx.resume();
+        if(resumed && typeof resumed.then==="function"){
+          resumed.then(()=>{
+            if(ctx.state==="running"){
+              playFallbackMidi(midi,volume,duration);
+            }
+          }).catch(err=>console.warn("Fallback audio resume failed:",err));
+        }
+      }catch(err){
+        console.warn("Fallback audio unavailable:",err);
+      }
+      return false;
+    }
 
     const now=ctx.currentTime+.004;
     const osc=ctx.createOscillator();
@@ -470,7 +487,8 @@
       }catch(_){}
     }
 
-    // 1. Existing behavior: relative to the HTML file.
+    // 1. Packaged repository sample, relative to the HTML file.
+    //    0.87 includes these WAVs in /samples/guitar/.
     add(def.local);
 
     // 2. GitHub Pages project sites:
@@ -8637,7 +8655,7 @@
     enterAdmin,
     play:playAll,
     stop:()=>stopPlayback(),
-    version:'0.86-fingering-repair'
+    version:'0.87-self-contained-audio'
   });
 
 })();

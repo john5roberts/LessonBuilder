@@ -5,6 +5,11 @@
       "id": "demo-chord-hammer",
       "title": "Demo — Chord Hammer-on",
       "file": "demo-chord-hammer.json"
+    },
+    {
+      "id": "box-1-4478cb2c",
+      "title": "Box 1",
+      "file": "box-1-4478cb2c.json"
     }
   ]
 }

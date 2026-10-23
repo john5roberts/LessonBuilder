@@ -701,24 +701,27 @@
   function playSampledMidi(midi,volume=.20,duration=.72){
     const ctx=getAudioCtx();
 
+    // If Web Audio does not exist, native local-WAV playback is the fallback.
     if(!ctx){
       return playMediaSampledMidi(midi,volume,duration);
     }
 
+    // During a direct tap Safari may still report "suspended" for a moment.
+    // Resume it for subsequent timed playback, but sound THIS gesture now
+    // through the local WAV path instead of dropping the note.
     if(ctx.state!=="running"){
       try{
         const p=ctx.resume();
         if(p && typeof p.catch==="function") p.catch(()=>{});
       }catch(_){}
-      return playMediaSampledMidi(midi,volume,duration);
+
+      if(playMediaSampledMidi(midi,volume,duration)) return true;
+      return playFallbackMidi(midi,volume,duration);
     }
 
-    /*
-      Web Audio buffer playback is much tighter rhythmically than creating a
-      fresh HTMLAudio element for every note. Use it whenever decoded samples
-      are ready — including Safari. The native WAV path remains the fallback
-      if Safari blocks Web Audio or decoding has not finished.
-    */
+    // Once Web Audio is running (normally by the time Player begins), use it.
+    // This is essential on Safari because later timed notes are no longer
+    // direct user gestures and new HTMLAudio.play() calls may be blocked.
     const pick=nearestGuitarSample(midi);
     if(!pick){
       if(playMediaSampledMidi(midi,volume,duration)) return true;
@@ -1337,11 +1340,8 @@
     const ctx=unlockAudioFromGesture() || getAudioCtx();
     if(!ctx) return false;
 
-    // Start local sample loading immediately after the synchronous unlock.
-    let samplesReady=null;
-    try{
-      samplesReady=loadGuitarSamples(ctx);
-    }catch(_){}
+    // Samples are an enhancement, never a prerequisite for sound.
+    try{ loadGuitarSamples(ctx).catch(()=>{}); }catch(_){}
 
     try{
       if(ctx.state==="suspended"){
@@ -1352,48 +1352,21 @@
     }
 
     S.audioUnlocked=(ctx.state==="running");
-
-    /*
-      Give the packaged local WAVs a short, bounded opportunity to decode
-      before playback begins. This avoids uneven HTMLAudio startup latency
-      between successive notes while never making sound depend on decoding.
-    */
-    if(S.audioUnlocked && samplesReady && typeof samplesReady.then==='function'){
-      try{
-        await Promise.race([
-          samplesReady,
-          new Promise(resolve=>setTimeout(resolve,700))
-        ]);
-      }catch(_){}
-    }
-
     return S.audioUnlocked;
   }
 
   function auditionDynamicNote(s,f,volume=.20){
     const ctx=unlockAudioFromGesture() || getAudioCtx();
-    if(!ctx) return;
 
-    // Keep loading real guitar samples in the background.
-    try{ loadGuitarSamples(ctx).catch(()=>{}); }catch(_){}
-
-    const play=()=>{
-      if(ctx.state==="running"){
-        playStringSample(s,f,volume,.72);
-      }
-    };
-
-    if(ctx.state==="running"){
-      play();
-      return;
+    // Keep decoded Web Audio samples loading in the background when possible.
+    if(ctx){
+      try{ loadGuitarSamples(ctx).catch(()=>{}); }catch(_){}
     }
 
-    try{
-      const resumed=ctx.resume();
-      if(resumed && typeof resumed.then==="function"){
-        resumed.then(play).catch(()=>{});
-      }
-    }catch(_){}
+    // Critical Safari rule: this call happens synchronously inside the user's
+    // tap. Do not wait for AudioContext.resume() before calling the sound
+    // engine, or the native-media fallback loses the user-gesture permission.
+    return playStringSample(s,f,volume,.72);
   }
 
   function auditionPositions(positions,{
@@ -1408,33 +1381,19 @@
     if(!valid.length) return false;
 
     const ctx=unlockAudioFromGesture() || getAudioCtx();
-    if(!ctx) return false;
 
-    try{ loadGuitarSamples(ctx).catch(()=>{}); }catch(_){}
-
-    const play=()=>{
-      if(ctx.state!=="running") return false;
-
-      // Chords / multiple positions are deliberately triggered in the same
-      // JavaScript turn so they sound together.
-      for(const p of valid){
-        playStringSample(p.s,p.f,volume,duration);
-      }
-      return true;
-    };
-
-    if(ctx.state==="running"){
-      return play();
+    if(ctx){
+      try{ loadGuitarSamples(ctx).catch(()=>{}); }catch(_){}
     }
 
-    try{
-      const resumed=ctx.resume();
-      if(resumed && typeof resumed.then==="function"){
-        resumed.then(play).catch(()=>{});
-      }
-    }catch(_){}
-
-    return false;
+    // Trigger all notes in this same user-gesture turn. If Web Audio has
+    // already unlocked they use decoded buffers; otherwise each note uses
+    // the immediate local-WAV fallback while the context resumes.
+    let played=false;
+    for(const p of valid){
+      played=playStringSample(p.s,p.f,volume,duration) || played;
+    }
+    return played;
   }
 
   function eventAuditionPositions(e){
@@ -1575,46 +1534,6 @@
     return Number.isFinite(min)?min:0;
   }
 
-  function lowestPerformedFretInEvents(events){
-    let min=Infinity;
-
-    for(const e of events || []){
-      if(
-        !e ||
-        e.play===false ||
-        isFrameworkEvent(e) ||
-        e.type===EVENT_TYPE.REST
-      ) continue;
-
-      eachEventPosition(e,p=>{
-        if(Number.isFinite(p.f)){
-          min=Math.min(min,p.f);
-        }
-      });
-    }
-
-    return Number.isFinite(min)?min:0;
-  }
-
-  function performedOpenPositionCount(events){
-    let count=0;
-
-    for(const e of events || []){
-      if(
-        !e ||
-        e.play===false ||
-        isFrameworkEvent(e) ||
-        e.type===EVENT_TYPE.REST
-      ) continue;
-
-      eachEventPosition(e,p=>{
-        if(Number.isFinite(p.f) && p.f===0) count++;
-      });
-    }
-
-    return count;
-  }
-
   function highestFretInEvents(events){
     let max=-Infinity;
     for(const e of events || []){
@@ -1627,27 +1546,12 @@
 
   function shiftEventsByFrets(events,delta){
     const shifted=cloneEvents(events);
-
     for(const e of shifted){
       eachEventPosition(e,p=>{
         p.f+=delta;
       });
     }
-
-    /*
-      When an authored framework extends closer to the nut than the actual
-      performed material, transposing the performed phrase to open position
-      can move a few green framework events below fret 0. Those positions do
-      not exist on the guitar, so omit only those framework events. Performed
-      events are protected by lowestPerformedFretInEvents() and therefore
-      remain at fret 0 or above.
-    */
-    return shifted.filter(e=>{
-      if(isFrameworkEvent(e)){
-        return Number.isFinite(e.f) && e.f>=0 && e.f<=TOTAL_FRETS;
-      }
-      return true;
-    });
+    return shifted;
   }
 
   function clearFingerAssignmentsInEvents(events){
@@ -1680,7 +1584,7 @@
     S.clipDraft[variant]=packet;
 
     if(variant==='original'){
-      const min=lowestPerformedFretInEvents(packet.events);
+      const min=lowestFretInEvents(packet.events);
       S.clipDraft.openShift=min;
     }
 
@@ -1704,7 +1608,7 @@
     if(!S.clipDraft.original) return null;
     const shift=Number.isFinite(S.clipDraft.openShift)
       ? S.clipDraft.openShift
-      : lowestPerformedFretInEvents(S.clipDraft.original.events);
+      : lowestFretInEvents(S.clipDraft.original.events);
     return mod12(S.clipDraft.original.keyPc-shift);
   }
 
@@ -8280,20 +8184,13 @@
 
       timedIndex++;
       S.playbackEventIndex=eventIndex;
-
-      /*
-        Begin the musical/visual event before repainting score/status UI.
-        Those repaints now happen inside the event's existing time window
-        instead of creating a small dead gap between events.
-      */
-      const eventPromise=playOne(e,run);
-
       renderScore();
+
       const playerLabel=playerEventLabel(e);
       statusEl.innerHTML=`<strong>${timedIndex}/${timedTotal}</strong>${playerLabel?`<br>${playerLabel}`:''}`;
       progressFill.style.width=`${totalUnits?(completedUnits/totalUnits)*100:0}%`;
 
-      await eventPromise;
+      await playOne(e,run);
       completedUnits+=eventDurationUnits(e);
     }
 
@@ -8389,19 +8286,11 @@
       return;
     }
 
-    const shift=lowestPerformedFretInEvents(original.events);
+    const shift=lowestFretInEvents(original.events);
     S.clipDraft.openShift=shift;
 
     const openEvents=shiftEventsByFrets(original.events,-shift);
     clearFingerAssignmentsInEvents(openEvents);
-
-    const openCount=performedOpenPositionCount(openEvents);
-    if(shift>0 && openCount===0){
-      statusEl.innerHTML=
-        '<strong>Open-position conversion failed.</strong><br>'+
-        'No performed note reached fret 0. The original lesson was left unchanged.';
-      return;
-    }
 
     const openKey=mod12(original.keyPc-shift);
     S.clipDraft.open={
@@ -8421,11 +8310,7 @@
     S.author=blankState();
     rebuildAuthor();
 
-    statusEl.innerHTML=
-      `<strong>Open-string version</strong><br>`+
-      `Shifted ${shift} fret${shift===1?'':'s'} toward the nut. `+
-      `${openCount} performed open-string position${openCount===1?'':'s'} created. `+
-      `Assign fingering to the remaining fretted notes. Open strings are phantom rings and require no finger.`;
+    statusEl.innerHTML=`<strong>Open-string version</strong><br>Shifted ${shift} fret${shift===1?'':'s'} toward the nut. Assign fingering to the remaining fretted notes. Open strings are phantom rings and require no finger.`;
 
     // Immediately open fingering assignment as requested.
     startFingeringAssignment();
@@ -8873,7 +8758,7 @@
     enterAdmin,
     play:playAll,
     stop:()=>stopPlayback(),
-    version:'0.89-open-shift-smooth-playback'
+    version:'0.89-direct-audition-audio'
   });
 
 })();

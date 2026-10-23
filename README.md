@@ -41,3 +41,13 @@ Safari/iOS no longer depends solely on Web Audio for ordinary guitar notes.
 Local WAV samples are played through native HTML media on Apple WebKit.
 Web Audio remains available for continuous articulations such as bends, and
 native media is used whenever the AudioContext is unavailable or suspended.
+
+
+## 0.89 direct-audition audio repair
+Fixes a Safari regression introduced in 0.88.
+
+- Placing a note now calls the sound engine synchronously in the tap gesture.
+- Chord/multi-note audition does the same.
+- If Web Audio is still suspended during that tap, the local WAV is played immediately.
+- Web Audio continues resuming in parallel and becomes the primary path for timed Player playback.
+- Native HTMLAudio is no longer forced for delayed Player events.

@@ -43,11 +43,12 @@ Web Audio remains available for continuous articulations such as bends, and
 native media is used whenever the AudioContext is unavailable or suspended.
 
 
-## 0.89 direct-audition audio repair
-Fixes a Safari regression introduced in 0.88.
+## 0.90 targeted audio routing repair
 
-- Placing a note now calls the sound engine synchronously in the tap gesture.
-- Chord/multi-note audition does the same.
-- If Web Audio is still suspended during that tap, the local WAV is played immediately.
-- Web Audio continues resuming in parallel and becomes the primary path for timed Player playback.
-- Native HTMLAudio is no longer forced for delayed Player events.
+- Retains the shared Web Audio engine, all seven packaged WAVs, and the unchanged authoring/Reader interfaces.
+- Removes the Safari-only unconditional HTMLAudio route: once Web Audio is running, ordinary guitar notes use the same decoded sample playback as other browsers.
+- Audition of placed notes and chords is initiated synchronously during the user gesture instead of waiting for a deferred AudioContext.resume() callback.
+- While Web Audio is running but samples are still decoding, uses the preexisting oscillator fallback for timed events rather than trying new HTMLAudio.play() calls outside a gesture.
+- This patch targets sound only. Animation smoothness and open-position conversion have NOT been modified or certified.
+
+After uploading all repository files, hard-refresh the GitHub Pages site and test placing a Played Note, chord audition, and Player playback on the target device.

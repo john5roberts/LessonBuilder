@@ -724,7 +724,9 @@
     // direct user gestures and new HTMLAudio.play() calls may be blocked.
     const pick=nearestGuitarSample(midi);
     if(!pick){
-      if(playMediaSampledMidi(midi,volume,duration)) return true;
+      // Sample decode may still be in progress. Timed Player events are not
+      // user gestures, so avoid HTMLAudio.play() here; use the existing
+      // Web Audio fallback until real sampled buffers have arrived.
       return playFallbackMidi(midi,volume,duration);
     }
 
@@ -860,7 +862,6 @@
 
     const pick=nearestGuitarSample(midi);
     if(!pick){
-      if(playMediaSampledMidi(midi,volume,duration)) return true;
       return playFallbackMidi(midi,volume*.85,duration);
     }
 
@@ -8758,7 +8759,7 @@
     enterAdmin,
     play:playAll,
     stop:()=>stopPlayback(),
-    version:'0.89-direct-audition-audio'
+    version:'0.90-audio-routing-repair'
   });
 
 })();

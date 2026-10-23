@@ -5621,6 +5621,141 @@
   }
 
 
+  function targetFingerValue(target){
+    if(!target) return null;
+    const e=S.events[target.eventIndex];
+    if(!e) return null;
+    return e.finger;
+  }
+
+  function chordFingeringComplete(e){
+    return !!(
+      e &&
+      e.type===EVENT_TYPE.CHORD &&
+      (e.notes || []).every(note=>
+        note.f===0 || validFingerLetter(note.finger)
+      )
+    );
+  }
+
+  function fingeringTargetComplete(target){
+    if(!target) return false;
+    const e=S.events[target.eventIndex];
+    if(!e) return false;
+
+    if(target.kind==='chord'){
+      return chordFingeringComplete(e);
+    }
+
+    return validFingerLetter(e.finger);
+  }
+
+  function firstIncompleteFingeringTargetIndex(targets){
+    return (targets || []).findIndex(
+      target=>!fingeringTargetComplete(target)
+    );
+  }
+
+  function makeFingeringSnapshot(){
+    return {
+      events:cloneEvents(S.events),
+      cursor:S.fingeringAssign.cursor,
+      selectedChordNoteIndex:S.fingeringAssign.selectedChordNoteIndex,
+      completedChordReviewEventIndex:S.fingeringAssign.completedChordReviewEventIndex
+    };
+  }
+
+  function pushFingeringSnapshot(){
+    S.fingeringAssign.assignmentHistory.push(makeFingeringSnapshot());
+    if(S.fingeringAssign.assignmentHistory.length>100){
+      S.fingeringAssign.assignmentHistory.shift();
+    }
+  }
+
+  function restoreFingeringSnapshot(snapshot){
+    if(!snapshot) return false;
+
+    hideFingeringConfirmDialog();
+
+    S.events=cloneEvents(snapshot.events);
+    S.fingeringAssign.targets=fingeringTargets();
+    S.fingeringAssign.cursor=Math.max(
+      0,
+      Math.min(
+        S.fingeringAssign.targets.length-1,
+        Number.isInteger(snapshot.cursor)?snapshot.cursor:0
+      )
+    );
+    S.fingeringAssign.selectedChordNoteIndex=
+      Number.isInteger(snapshot.selectedChordNoteIndex)
+        ? snapshot.selectedChordNoteIndex
+        : null;
+    S.fingeringAssign.completedChordReviewEventIndex=
+      Number.isInteger(snapshot.completedChordReviewEventIndex)
+        ? snapshot.completedChordReviewEventIndex
+        : null;
+    S.fingeringAssign.confirmingChordEventIndex=null;
+
+    S.fingerPose=blankFingerPose();
+    renderEventList();
+    prepareFingeringTargetPose(currentFingeringTarget());
+    showFingeringTarget(false);
+    auditionFingeringTarget(currentFingeringTarget());
+    return true;
+  }
+
+
+  function prepareFingeringTargetPose(target){
+    S.fingerPose=blankFingerPose();
+    clearChordBarres();
+
+    if(!target) return;
+
+    const e=S.events[target.eventIndex];
+    if(!e) return;
+
+    // Chords are rendered directly by the validated chord hand engine.
+    if(target.kind==='chord') return;
+
+    // When revisiting an already assigned position, show its saved fingering
+    // rather than pretending it is a brand-new choice.
+    if(validFingerLetter(e.finger)){
+      S.fingerPose=nextFingerPoseForEvent(blankFingerPose(),e);
+      return;
+    }
+
+    S.fingerPose=assignmentChoicePose(target);
+  }
+
+  function fingeringTargetIndexForEvent(eventIndex){
+    return S.fingeringAssign.targets.findIndex(
+      target=>target.eventIndex===eventIndex
+    );
+  }
+
+  function jumpToFingeringEvent(eventIndex){
+    if(!S.fingeringAssign.active) return false;
+
+    const targetIndex=fingeringTargetIndexForEvent(eventIndex);
+    if(targetIndex<0){
+      statusEl.innerHTML=
+        '<strong>No independent fingering assignment here.</strong><br>'+
+        'Choose a pluck, hammer/pull destination, or chord row.';
+      return false;
+    }
+
+    hideFingeringConfirmDialog();
+    S.fingeringAssign.cursor=targetIndex;
+    S.fingeringAssign.selectedChordNoteIndex=null;
+    S.fingeringAssign.completedChordReviewEventIndex=null;
+    S.fingeringAssign.confirmingChordEventIndex=null;
+
+    prepareFingeringTargetPose(currentFingeringTarget());
+    showFingeringTarget(false);
+    return true;
+  }
+
+
   function authoredFingeringCompleteForPlayback(){
     let sawPhysicalFinger=false;
 
@@ -8502,7 +8637,7 @@
     enterAdmin,
     play:playAll,
     stop:()=>stopPlayback(),
-    version:'0.84-phase1'
+    version:'0.86-fingering-repair'
   });
 
 })();

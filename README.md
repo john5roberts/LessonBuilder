@@ -20,3 +20,9 @@ The existing guitar sample lookup paths remain unchanged (`samples/guitar/...` p
 ## 0.85 Reader correction
 
 `reader.html` is now a player-only shell. It contains no visible Admin, authoring, movement, score-editing, approval, or recall controls. Hidden runtime support nodes exist only so the exact shared `player-core.js` can run unchanged in both Lesson Builder and Reader.
+
+
+## 0.86 repair
+Restores the Fingering state helpers accidentally removed during the chord-movement refactor.
+The Mode cycle is again Framework → Played Notes → Fingering → Framework.
+HTML references use `?v=0.86` cache-busting query strings so GitHub Pages/Safari fetch the repaired runtime.

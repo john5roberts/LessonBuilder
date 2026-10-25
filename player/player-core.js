@@ -1543,6 +1543,22 @@
     return Number.isFinite(min)?min:0;
   }
 
+  // A framework dot is a visual guide, not a sounded note. In particular,
+  // guide notes at fret 1 must not prevent a played note at fret 3 from
+  // becoming an open string. fingerOff is likewise a zero-time release,
+  // not an anchor for the open-position translation.
+  function lowestSoundingFretInEvents(events){
+    let min=Infinity;
+    for(const e of events || []){
+      if(!e || e.play===false ||
+         (e.type!==EVENT_TYPE.FINGER_ON &&
+          e.type!==EVENT_TYPE.CHORD &&
+          e.type!==EVENT_TYPE.MOVE)) continue;
+      eachEventPosition(e,p=>{min=Math.min(min,p.f);});
+    }
+    return Number.isFinite(min)?min:null;
+  }
+
   function highestFretInEvents(events){
     let max=-Infinity;
     for(const e of events || []){
@@ -1551,6 +1567,62 @@
       });
     }
     return Number.isFinite(max)?max:0;
+  }
+
+  // Build an actual open-string performance, not merely a diagram moved by
+  // the lowest FRAMEWORK fret. All sounding positions, including chord voices,
+  // move endpoints and bend references, receive exactly the same semitone
+  // displacement. Guide marks below the nut cannot exist on a real guitar:
+  // omit only those untimed guide events (and orphan release events).
+  function makeOpenStringEvents(events){
+    const shift=lowestSoundingFretInEvents(events);
+    if(shift===null){
+      return {error:'Add at least one Played Note before creating the open-string version.'};
+    }
+
+    if(shift>0){
+      for(const e of events){
+        if(!e || e.type!==EVENT_TYPE.MOVE || e.play===false) continue;
+        if(e.movement==='bend'){
+          // Unlike a hammer-on or pull-off, bends need a fretted finger.
+          const home=e.bendHome ||
+            (e.bendPhase==='pre-release' ? e.to : e.from);
+          if(home && home.f-shift<=0){
+            return {error:'This bend would require bending an open string. Add a lower fretted pluck, or revise the bend before creating the open-string version.'};
+          }
+        }
+        if(e.movement==='slide' &&
+           ((e.from && e.from.f-shift<=0) ||
+            (e.to && e.to.f-shift<=0))){
+          return {error:'This slide would start or end on an open string. Revise the passage before creating its open-string version.'};
+        }
+      }
+    }
+
+    const shifted=[];
+    let omittedFramework=0;
+    for(const e of cloneEvents(events)){
+      if(isFrameworkEvent(e) && e.f<shift){
+        omittedFramework++;
+        continue;
+      }
+      if(e.type===EVENT_TYPE.FINGER_OFF && e.f<shift){
+        continue;
+      }
+      let invalid=false;
+      eachEventPosition(e,p=>{
+        p.f-=shift;
+        if(p.f<0 || p.f>TOTAL_FRETS) invalid=true;
+      });
+      if(invalid){
+        return {error:'The clip contains a note or movement that cannot be shifted onto the open-position fretboard.'};
+      }
+      shifted.push(e);
+    }
+    if(lowestSoundingFretInEvents(shifted)!==0){
+      return {error:'The conversion did not produce an open-string note. No open variant was saved.'};
+    }
+    return {events:shifted,shift,omittedFramework};
   }
 
   function shiftEventsByFrets(events,delta){
@@ -1593,8 +1665,7 @@
     S.clipDraft[variant]=packet;
 
     if(variant==='original'){
-      const min=lowestFretInEvents(packet.events);
-      S.clipDraft.openShift=min;
+      S.clipDraft.openShift=lowestSoundingFretInEvents(packet.events);
     }
 
     return packet;
@@ -1617,8 +1688,8 @@
     if(!S.clipDraft.original) return null;
     const shift=Number.isFinite(S.clipDraft.openShift)
       ? S.clipDraft.openShift
-      : lowestFretInEvents(S.clipDraft.original.events);
-    return mod12(S.clipDraft.original.keyPc-shift);
+      : lowestSoundingFretInEvents(S.clipDraft.original.events);
+    return shift===null ? null : mod12(S.clipDraft.original.keyPc-shift);
   }
 
   function chooseMovableDelta(events,sourceKeyPc,targetKeyPc){
@@ -8392,10 +8463,13 @@
       return;
     }
 
-    const shift=lowestFretInEvents(original.events);
+    const conversion=makeOpenStringEvents(original.events);
+    if(conversion.error){
+      statusEl.innerHTML='<strong>Open-string version not created</strong><br>'+conversion.error;
+      return;
+    }
+    const {shift,events:openEvents,omittedFramework}=conversion;
     S.clipDraft.openShift=shift;
-
-    const openEvents=shiftEventsByFrets(original.events,-shift);
     clearFingerAssignmentsInEvents(openEvents);
 
     const openKey=mod12(original.keyPc-shift);
@@ -8416,7 +8490,7 @@
     S.author=blankState();
     rebuildAuthor();
 
-    statusEl.innerHTML=`<strong>Open-string version</strong><br>Shifted ${shift} fret${shift===1?'':'s'} toward the nut. Assign fingering to the remaining fretted notes. Open strings are phantom rings and require no finger.`;
+    statusEl.innerHTML=`<strong>Open-string version</strong><br>Shifted ${shift} fret${shift===1?'':'s'} toward the nut. Played notes at fret 0 need no finger. ${omittedFramework?`${omittedFramework} below-nut Framework marks were omitted. `:''}Assign the remaining fretted notes.`;
 
     // Immediately open fingering assignment as requested.
     startFingeringAssignment();

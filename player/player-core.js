@@ -237,6 +237,7 @@
     // A fresh chord begins on the first tap, never by silently absorbing
     // the previous solo note or the last completed chord.
     chordEntryFresh:true,
+    chordDraftIndex:null, // One event is edited in place while composing a chord.
     pendingMove:null,
     pendingPreBend:null,
     pendingChordMove:null,
@@ -3872,7 +3873,8 @@
       editSelectionKind:S.editSelectionKind || null,
       nextBendId:S.nextBendId,
       nextChordId:S.nextChordId,
-      chordEntryFresh:S.chordEntryFresh
+      chordEntryFresh:S.chordEntryFresh,
+      chordDraftIndex:S.chordDraftIndex
     };
   }
 
@@ -3900,6 +3902,8 @@
     S.nextBendId=snapshot.nextBendId || 1;
     S.nextChordId=snapshot.nextChordId || 1;
     S.chordEntryFresh=snapshot.chordEntryFresh!==false;
+    S.chordDraftIndex=Number.isInteger(snapshot.chordDraftIndex)
+      ? snapshot.chordDraftIndex : null;
     resetPendingAuthoringState();
     rebuildAuthor();
     return true;
@@ -4055,6 +4059,10 @@
     }
 
     resetPendingAuthoringState();
+    // A historical edit ends any in-progress chord construction. The
+    // existing chord event remains saved and playable.
+    S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
     S.previewEventIndex=null;
     S.editEventIndex=eventIndex;
     S.editSelectionKind='edit';
@@ -4473,143 +4481,152 @@
     };
   }
 
+  function pendingChordEvent(){
+    const i=S.chordDraftIndex;
+    if(S.chordEntryFresh || !Number.isInteger(i) || i!==S.events.length-1){
+      return null;
+    }
+    const e=S.events[i];
+    return e && (e.type===EVENT_TYPE.FINGER_ON || e.type===EVENT_TYPE.CHORD)
+      ? e : null;
+  }
+
+  function notesInPendingChord(e){
+    if(!e) return [];
+    if(e.type===EVENT_TYPE.CHORD) return cloneEvents(e.notes || []);
+    if(e.type===EVENT_TYPE.FINGER_ON){
+      const note={s:e.s,f:e.f};
+      if(validFingerLetter(e.finger)) note.finger=fingerLetter(e.finger);
+      return [note];
+    }
+    return [];
+  }
+
+  function makePendingChordEvent(notes,prior){
+    const durationUnits=eventDurationUnits(prior);
+    if(notes.length===1){
+      const n=notes[0];
+      const e={
+        type:EVENT_TYPE.FINGER_ON,s:n.s,f:n.f,
+        articulation:'pluck',durationUnits,play:true
+      };
+      if(validFingerLetter(n.finger)) e.finger=fingerLetter(n.finger);
+      return e;
+    }
+    return {
+      type:EVENT_TYPE.CHORD,
+      chordId:prior.chordId || 'chord-'+(S.nextChordId++),
+      notes:cloneEvents(notes), durationUnits, play:true
+    };
+  }
+
   function updateChordButton(){
     if(!chordBtn) return;
-    const ready=
+    // A chord is ALREADY one timed event once two notes are chosen. This
+    // button now closes that shape before the first tap of the next chord.
+    const pending=pendingChordEvent();
+    const ready=(
       !document.body.classList.contains('player') &&
       !S.fingeringAssign.active &&
       S.tool==='finger' &&
       S.playedSubmode==='chords' &&
-      !S.chordEntryFresh &&
       S.editSelectionKind!=='edit' &&
-      currentPinkPositions().length>1;
-
+      !!pending && pending.type===EVENT_TYPE.CHORD &&
+      Array.isArray(pending.notes) && pending.notes.length>=2
+    );
     chordBtn.disabled=!ready;
     chordBtn.classList.toggle('ready',ready);
   }
 
   function groupCurrentPinkAsChord(){
-    renderScore();
-
-    if(S.fingeringAssign.active) return;
-
-    if(Number.isInteger(S.editEventIndex) && S.editSelectionKind==='edit'){
-      statusEl.innerHTML='<strong>Finish editing the selected row first.</strong><br>Tap the selected row again, then use Chord on the current Played Notes state.';
+    // Legacy movement-panel button has become Next Chord. There is nothing
+    // left to group: the pink chord is stored as ONE timed event already.
+    const pending=pendingChordEvent();
+    if(S.fingeringAssign.active || S.tool!=='finger' ||
+       S.playedSubmode!=='chords' ||
+       !pending || pending.type!==EVENT_TYPE.CHORD ||
+       !Array.isArray(pending.notes) || pending.notes.length<2){
+      announce('Select at least two notes in Chords first.',false);
       return;
     }
-
-    if(S.editSelectionKind==='timing'){
-      clearAuthorEditSelection(false);
-    }
-
-    exitSequencePreview();
-
-    if(S.tool!=='finger') setTool('finger');
-
-    if(S.playedSubmode!=='chords' || S.chordEntryFresh){
-      announce('Choose Chords and add the notes for the new chord first.',false);
+    if(S.editSelectionKind==='edit'){
+      announce('Finish editing the selected row first.',false);
       return;
     }
+    if(S.editSelectionKind==='timing') clearAuthorEditSelection(false);
+    S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
+    updateChordButton();
+    announce('Chord complete. The next tap starts another chord.',false);
+  }
 
-    const visible=currentPinkPositions();
-    if(visible.length<2){
-      announce('Add at least two pink notes before creating a chord.',false);
-      return;
-    }
-
-    const sources=activePinkSourceMap();
-    const refs=visible.map(pos=>({
-      pos,
-      source:sources.get(posKey(pos.s,pos.f))
-    }));
-
-    if(refs.some(r=>!r.source)){
-      announce('One of the visible pink notes could not be traced to its source event.',false);
-      return;
-    }
-
-    const sourceIndexes=[...new Set(refs.map(r=>r.source.eventIndex))];
-    const sourceEvents=sourceIndexes.map(i=>S.events[i]);
-
-    if(
-      sourceIndexes.length===1 &&
-      sourceEvents[0] &&
-      (
-        sourceEvents[0].type===EVENT_TYPE.CHORD ||
-        isChordMoveEvent(sourceEvents[0])
-      )
-    ){
-      announce('These pink notes are already one chord state.',false);
-      return;
-    }
-
-    /*
-      Keep chord creation intentionally conservative around movements. A
-      movement carries its own articulation/timing semantics, so silently
-      collapsing one into a chord would destroy that information.
-    */
-    if(sourceEvents.some(e=>e && e.type==='move')){
-      announce('A movement-derived pink note cannot be folded into a chord yet. Use ordinary Played Notes for the chord shape.',false);
-      return;
-    }
-
-    const notes=refs.map(({pos,source})=>{
-      const sourceEvent=S.events[source.eventIndex];
-      let finger=null;
-
-      if(sourceEvent.type==='fingerOn'){
-        finger=validFingerLetter(sourceEvent.finger)
-          ? fingerLetter(sourceEvent.finger)
-          : null;
-      }else if(sourceEvent.type==='chord'){
-        const oldNote=sourceEvent.notes[source.noteIndex];
-        finger=oldNote && validFingerLetter(oldNote.finger)
-          ? fingerLetter(oldNote.finger)
-          : null;
+  function handleChordNoteTap(s,f){
+    // Editing a chord never appends one pluck for every voice. The first tap
+    // creates a temporary single-note event; the second changes THAT event
+    // into a chord. Later taps edit the same event and its one duration.
+    let prior=pendingChordEvent();
+    if(!prior){
+      pushAuthorSnapshot();
+      for(const note of S.author.fingers.values()){
+        S.events.push({
+          type:EVENT_TYPE.FINGER_OFF,s:note.s,f:note.f,play:false
+        });
       }
+      S.chordDraftIndex=S.events.length;
+      S.events.push({
+        type:EVENT_TYPE.FINGER_ON,s,f,
+        articulation:'pluck',durationUnits:SCORE_DEFAULT_DURATION_UNITS,
+        play:true
+      });
+      S.chordEntryFresh=false;
+      rebuildAuthor();
+      auditionDynamicNote(s,f,.20);
+      announce(`Chord note: ${noteName(s,f)}. Choose more notes for the chord.`,true);
+      return;
+    }
 
-      const note={s:pos.s,f:pos.f};
-      if(finger) note.finger=finger;
-      return note;
-    });
-
-    const maxIndex=Math.max(...sourceIndexes);
-    const removeSet=new Set(sourceIndexes);
-
-    const latestSourceEvent=S.events[maxIndex];
-    const chordEvent={
-      type:'chord',
-      chordId:'chord-'+(S.nextChordId++),
-      notes,
-      durationUnits:eventDurationUnits(latestSourceEvent),
-      play:true
-    };
-
+    const notes=notesInPendingChord(prior);
+    const same=notes.findIndex(n=>n.s===s && n.f===f);
+    const sameString=notes.findIndex(n=>n.s===s);
     pushAuthorSnapshot();
-
-    const rebuilt=[];
-    for(let i=0;i<S.events.length;i++){
-      if(i===maxIndex){
-        rebuilt.push(chordEvent);
-        continue;
-      }
-      if(removeSet.has(i)) continue;
-      rebuilt.push(S.events[i]);
+    let removed=false;
+    let changedOnString=false;
+    if(same>=0){
+      notes.splice(same,1);
+      removed=true;
+    }else if(sameString>=0){
+      // One sounding note per guitar string. Choosing a different fret on
+      // the same string moves that voice instead of creating an impossible
+      // two-fret chord.
+      notes[sameString]={s,f};
+      changedOnString=true;
+    }else{
+      notes.push({s,f});
     }
 
-    S.events=rebuilt;
-    S.chordEntryFresh=true; // The next chord starts a new explicit shape.
-    resetPendingAuthoringState();
+    if(!notes.length){
+      S.events.splice(S.chordDraftIndex,1);
+      S.chordEntryFresh=true;
+      S.chordDraftIndex=null;
+      rebuildAuthor();
+      playUiClick();
+      announce('Chord shape cleared.',false);
+      return;
+    }
+
+    const updated=makePendingChordEvent(notes,prior);
+    S.events[S.chordDraftIndex]=updated;
     rebuildAuthor();
 
-    shell.classList.remove('chordConfirmPulse');
-    shell.getBoundingClientRect();
-    shell.classList.add('chordConfirmPulse');
-    setTimeout(()=>shell.classList.remove('chordConfirmPulse'),450);
-
-    const names=notes.map(n=>noteName(n.s,n.f)).join(' · ');
-    auditionEventPitch(chordEvent);
-    announce(`Chord: ${names}`,true);
+    if(removed){
+      playUiClick();
+      announce(`Chord note off: ${noteName(s,f)}.`,false);
+    }else{
+      // Hear the whole chord after its second note and on further changes;
+      // playback likewise contains a single chord event, not a note run.
+      auditionEventPitch(updated);
+      announce(`${notes.length===1?'Chord note':'Chord'}: ${notes.map(n=>noteName(n.s,n.f)).join(' · ')}${changedOnString?' (voice moved)':''}.`,false);
+    }
   }
 
   function validateMove(kind,from,to,fromEntry){
@@ -4914,49 +4931,7 @@
       return;
     }
 
-    // Chords submode: the first tap starts a fresh chord shape. Never inherit
-    // an earlier individual note, prior confirmed chord, or movement result.
-    if(S.chordEntryFresh){
-      pushAuthorSnapshot();
-      for(const note of S.author.fingers.values()){
-        S.events.push({
-          type:EVENT_TYPE.FINGER_OFF,s:note.s,f:note.f,play:false
-        });
-      }
-      S.events.push({
-        type:EVENT_TYPE.FINGER_ON,s,f,
-        articulation:'pluck',
-        durationUnits:SCORE_DEFAULT_DURATION_UNITS,
-        play:true
-      });
-      S.chordEntryFresh=false;
-      rebuildAuthor();
-      auditionDynamicNote(s,f,.20);
-      announce(`Chord note: ${noteName(s,f)}. Add another note, then press Chord.`,true);
-      return;
-    }
-
-    if(S.author.fingers.has(k)){
-      // Existing chord-assembly gesture: tapping pink toggles that voice off.
-      pushAuthorSnapshot();
-      S.events.push({type:'fingerOff',s,f,play:false});
-      rebuildAuthor();
-      playUiClick();
-      announce(`Chord note off: ${noteName(s,f)}`,false);
-      return;
-    }
-
-    pushAuthorSnapshot();
-    S.events.push({
-      type:'fingerOn',
-      s,f,
-      articulation:'pluck',
-      durationUnits:SCORE_DEFAULT_DURATION_UNITS,
-      play:true
-    });
-    rebuildAuthor();
-    auditionDynamicNote(s,f,.20);
-    announce(`Chord note: ${noteName(s,f)}. Press Chord to group.`,true);
+    handleChordNoteTap(s,f);
   }
 
   function insertRest(){
@@ -4998,6 +4973,8 @@
       ? S.events.length
       : selectedIndex+1;
 
+    S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
     S.events.splice(insertIndex,0,{
       type:EVENT_TYPE.REST,
       durationUnits:SCORE_DEFAULT_DURATION_UNITS,
@@ -6377,6 +6354,8 @@
     S.previewEventIndex=null;
 
     resetPendingAuthoringState();
+    S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
 
     propagateFingerAssignments();
 
@@ -7734,17 +7713,17 @@
     }
 
     if(S.chordEntryFresh){
-      return '<strong>Chords</strong><br>Tap the first note of a new chord. Existing pink notes remain until that first tap, and are not included automatically.';
+      return '<strong>Chords</strong><br>Tap the first note of a new chord. The second note creates one simultaneous chord event; further taps edit that event.';
     }
 
     const pinkCount=currentPinkPositions().length;
     if(pinkCount>1)
-      return '<strong>Pink notes</strong><br>Press Chord to group the visible pink notes into one simultaneous event, or choose another movement.';
+      return '<strong>Chord ready</strong><br>These notes already form ONE simultaneous chord event. Tap to edit its voices, use a movement, or press Next Chord to start another shape.';
     if(scoreTimingActive()){
       return '<strong>Score timing</strong><br>Tap a note or rest in the score, then use − / +.';
     }
 
-    return '<strong>Chords</strong><br>Tap notes to add them to the same chord. Tap an existing pink note to remove it. Press Chord when at least two notes are selected; turn Score on when ready to edit timing.';
+    return '<strong>Chords</strong><br>Tap another string to add a simultaneous chord voice; tap an existing pink note to remove it. The next chord needs Next Chord, and Score edits its single duration.';
   }
 
   function announce(msg,playback){
@@ -7766,6 +7745,11 @@
     if(tool==='finger' && previousTool!=='finger'){
       S.playedSubmode='individual';
       S.chordEntryFresh=true;
+      S.chordDraftIndex=null;
+    }
+    if(tool!=='finger'){
+      S.chordEntryFresh=true;
+      S.chordDraftIndex=null;
     }
 
     if(tool!=='finger'){
@@ -7795,6 +7779,7 @@
     // the first new fretboard tap. Historical editing is also left intact.
     S.playedSubmode=mode;
     S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
     if(S.pendingMove){
       S.pendingMove=null;
       S.pendingChordMove=null;
@@ -7856,6 +7841,8 @@
       S.pendingMove=kind;
       S.pendingPreBend=null;
       S.pendingChordMove=chordContext;
+      S.chordEntryFresh=true;
+      S.chordDraftIndex=null;
 
       if(kind==='bend' && !chordContext){
         const ref=currentOriginSourceRef();
@@ -7982,6 +7969,8 @@
 
     if(!changed) return;
 
+    S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
     resetPendingAuthoringState();
     rebuildAuthor();
     statusEl.innerHTML=toolHelp();
@@ -8019,6 +8008,8 @@
     if(changed){
       S.editEventIndex=null;
       S.editSelectionKind=null;
+      S.chordEntryFresh=true;
+      S.chordDraftIndex=null;
     }
 
     resetPendingAuthoringState();
@@ -8558,6 +8549,8 @@
   }
 
   function enterPlayer(){
+    S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
     if(S.fingeringAssign.active) cancelFingeringAssignment(false);
 
     document.body.classList.remove('scoreFocus');
@@ -8852,6 +8845,7 @@
 
     S.events=cloneEvents(normalized.original.events);
     S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
     S.keyPc=normalized.original.keyPc;
     S.playerKeyPc=normalized.original.keyPc;
     keySel.value=String(S.keyPc);

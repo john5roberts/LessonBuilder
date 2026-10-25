@@ -1723,3 +1723,46 @@ body.reader .playerClipControls{
 /* 0.91: isolated publishing status styling */
 .publishStatus{font-size:12px;line-height:1.45;margin-top:5px;overflow-wrap:anywhere;color:var(--muted,#88919c)}
 .publishStatus.error{color:#d36b6b}
+
+/* 0.92: Published snippet picker in Builder Player only; never in Admin. */
+body:not(.reader) .readerOnly { display:none; }
+body.player:not(.reader) .readerSnippetSection { display:block; margin-bottom:8px; }
+body.player:not(.reader) .readerSnippetSelect { width:100%; }
+body.player:not(.reader) .readerStatus { font-size:10px; min-height:14px; margin-top:4px; color:var(--text-muted); }
+
+/* 0.93 — Played Notes submodes fit the existing narrow Admin sidebar. */
+#playedSubmodeControls[hidden]{display:none!important}
+.playedSubmodeControls{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:4px;
+  width:92px;
+  margin-top:3px;
+}
+.playedSubmodeBtn{
+  min-height:27px;
+  width:100%;
+  padding:3px 5px;
+  border:1px solid rgba(214,230,255,.22);
+  border-radius:7px;
+  background:linear-gradient(180deg,#172233,#0f1722);
+  color:#d4ddea;
+  font-size:10px;
+  font-weight:750;
+  cursor:pointer;
+}
+.playedSubmodeBtn.on{
+  color:#fff;
+  border-color:rgba(255,20,147,.82);
+  background:linear-gradient(180deg,rgba(76,24,63,.98),rgba(41,12,34,.98));
+  box-shadow:inset 0 0 0 1px rgba(255,20,147,.28);
+}
+/* A repeated single-note tap gets a brief visual release, then the same pink
+   position appears again. The off/on are the author's two untimed/timed events. */
+.fingerMark.noteRetriggerFlash{
+  animation:noteRetriggerFlash .17s step-end 1;
+}
+@keyframes noteRetriggerFlash{
+  0%,38%{opacity:0}
+  39%,100%{opacity:1}
+}

@@ -1,0 +1,2455 @@
+{
+  "format": "guitar-animation-snippet",
+  "version": 1,
+  "sourceKeyPc": 0,
+  "openKeyPc": 0,
+  "openShift": 0,
+  "variants": {
+    "original": {
+      "keyPc": 0,
+      "events": [
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 1,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 2,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 1,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 3,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 6,
+          "play": true
+        },
+        {
+          "type": "frameworkOff",
+          "s": 5,
+          "f": 6,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 6,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 4,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOff",
+          "s": 3,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOff",
+          "s": 5,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 9,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 10,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 10,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 10,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 12,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 13,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 14,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 13,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 15,
+          "play": true
+        },
+        {
+          "type": "frameworkOff",
+          "s": 5,
+          "f": 15,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 15,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 12,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 12,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 3,
+          "play": true
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-1",
+          "notes": [
+            {
+              "s": 5,
+              "f": 0
+            },
+            {
+              "s": 4,
+              "f": 1,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 2,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 1,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-2",
+          "notes": [
+            {
+              "s": 5,
+              "f": 1,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 2,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 3,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 1,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 3,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-3",
+          "notes": [
+            {
+              "s": 5,
+              "f": 0
+            },
+            {
+              "s": 4,
+              "f": 1,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 2,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 1,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-4",
+          "notes": [
+            {
+              "s": 5,
+              "f": 0
+            },
+            {
+              "s": 4,
+              "f": 0
+            },
+            {
+              "s": 3,
+              "f": 0
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-5",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 5,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-6",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 6,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 7,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 6,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-7",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 5,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-8",
+          "notes": [
+            {
+              "s": 5,
+              "f": 3,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 4,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 3,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 4,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-9",
+          "notes": [
+            {
+              "s": 5,
+              "f": 8,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-10",
+          "notes": [
+            {
+              "s": 5,
+              "f": 10,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 10,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-11",
+          "notes": [
+            {
+              "s": 5,
+              "f": 8,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-12",
+          "notes": [
+            {
+              "s": 5,
+              "f": 7,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 8,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-13",
+          "notes": [
+            {
+              "s": 5,
+              "f": 12,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 13,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 14,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 13,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 14,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-14",
+          "notes": [
+            {
+              "s": 5,
+              "f": 13,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 14,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 15,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 13,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 14,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 15,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-15",
+          "notes": [
+            {
+              "s": 5,
+              "f": 12,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 13,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 14,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 13,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 14,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-16",
+          "notes": [
+            {
+              "s": 5,
+              "f": 12,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 12,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 12,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-17",
+          "notes": [
+            {
+              "s": 5,
+              "f": 8,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-18",
+          "notes": [
+            {
+              "s": 5,
+              "f": 10,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 10,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-19",
+          "notes": [
+            {
+              "s": 5,
+              "f": 8,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-20",
+          "notes": [
+            {
+              "s": 5,
+              "f": 7,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 8,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-21",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 5,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-22",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 6,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 7,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 6,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-23",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 5,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-24",
+          "notes": [
+            {
+              "s": 5,
+              "f": 3,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 4,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 3,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 4,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-25",
+          "notes": [
+            {
+              "s": 5,
+              "f": 0
+            },
+            {
+              "s": 4,
+              "f": 1,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 2,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 16,
+          "play": true
+        }
+      ]
+    },
+    "open": {
+      "keyPc": 0,
+      "events": [
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 1,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 2,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 0,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 1,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 3,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 5,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 6,
+          "play": true
+        },
+        {
+          "type": "frameworkOff",
+          "s": 5,
+          "f": 6,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 6,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 4,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOff",
+          "s": 3,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOff",
+          "s": 5,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 9,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 10,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 10,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 10,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 7,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 8,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 12,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 13,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 14,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 13,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 5,
+          "f": 15,
+          "play": true
+        },
+        {
+          "type": "frameworkOff",
+          "s": 5,
+          "f": 15,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 15,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 12,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 3,
+          "f": 12,
+          "play": true
+        },
+        {
+          "type": "frameworkOn",
+          "s": 4,
+          "f": 3,
+          "play": true
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-1",
+          "notes": [
+            {
+              "s": 5,
+              "f": 0
+            },
+            {
+              "s": 4,
+              "f": 1,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 2,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 1,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-2",
+          "notes": [
+            {
+              "s": 5,
+              "f": 1,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 2,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 3,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 1,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 3,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-3",
+          "notes": [
+            {
+              "s": 5,
+              "f": 0
+            },
+            {
+              "s": 4,
+              "f": 1,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 2,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 1,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 2,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-4",
+          "notes": [
+            {
+              "s": 5,
+              "f": 0
+            },
+            {
+              "s": 4,
+              "f": 0
+            },
+            {
+              "s": 3,
+              "f": 0
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 0,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-5",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 5,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-6",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 6,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 7,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 6,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-7",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 5,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-8",
+          "notes": [
+            {
+              "s": 5,
+              "f": 3,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 4,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 3,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 4,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-9",
+          "notes": [
+            {
+              "s": 5,
+              "f": 8,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-10",
+          "notes": [
+            {
+              "s": 5,
+              "f": 10,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 10,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-11",
+          "notes": [
+            {
+              "s": 5,
+              "f": 8,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-12",
+          "notes": [
+            {
+              "s": 5,
+              "f": 7,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 8,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-13",
+          "notes": [
+            {
+              "s": 5,
+              "f": 12,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 13,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 14,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 13,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 14,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-14",
+          "notes": [
+            {
+              "s": 5,
+              "f": 13,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 14,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 15,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 13,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 14,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 15,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-15",
+          "notes": [
+            {
+              "s": 5,
+              "f": 12,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 13,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 14,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 13,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 14,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-16",
+          "notes": [
+            {
+              "s": 5,
+              "f": 12,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 12,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 12,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 12,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-17",
+          "notes": [
+            {
+              "s": 5,
+              "f": 8,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-18",
+          "notes": [
+            {
+              "s": 5,
+              "f": 10,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 10,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-19",
+          "notes": [
+            {
+              "s": 5,
+              "f": 8,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 10,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 10,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-20",
+          "notes": [
+            {
+              "s": 5,
+              "f": 7,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 8,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 9,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 8,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 9,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-21",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 5,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-22",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 6,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 7,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 6,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 7,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-23",
+          "notes": [
+            {
+              "s": 5,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 5,
+              "finger": "I"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-24",
+          "notes": [
+            {
+              "s": 5,
+              "f": 3,
+              "finger": "I"
+            },
+            {
+              "s": 3,
+              "f": 4,
+              "finger": "M"
+            },
+            {
+              "s": 4,
+              "f": 5,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 8,
+          "play": true
+        },
+        {
+          "type": "fingerOff",
+          "s": 5,
+          "f": 3,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 3,
+          "f": 4,
+          "play": false
+        },
+        {
+          "type": "fingerOff",
+          "s": 4,
+          "f": 5,
+          "play": false
+        },
+        {
+          "type": "chord",
+          "chordId": "chord-25",
+          "notes": [
+            {
+              "s": 5,
+              "f": 0
+            },
+            {
+              "s": 4,
+              "f": 1,
+              "finger": "M"
+            },
+            {
+              "s": 3,
+              "f": 2,
+              "finger": "R"
+            }
+          ],
+          "durationUnits": 16,
+          "play": true
+        }
+      ]
+    }
+  },
+  "id": "123-minor-triads-1d6fad49",
+  "title": "123 minor triads"
+}

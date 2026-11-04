@@ -3,12 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Lesson Builder 0.95 — Open String Position Fix</title>
+<title>Lesson Builder 0.96 — Open Position Verification</title>
 <link rel="stylesheet" href="player/player.css?v=0.94">
+<style>
+  .openVariantReport{box-sizing:border-box;margin:10px 0 12px;padding:12px 10px;border:1px solid #5984a8;border-radius:11px;background:#152637;color:#e2eefc;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+  .openVariantReport strong{display:block;color:#f1f7ff;font-size:13px;margin-bottom:5px}
+  .openVariantReport .openSummaryDetail{color:#9dc3e0;margin-top:5px}
+  .openVariantReport[hidden]{display:none !important}
+</style>
 </head>
 <body>
 <div class="app">
-  <div class="apptitle">Lesson Builder</div>
+  <div class="apptitle">Lesson Builder <span style="font-size:.46em;opacity:.55;vertical-align:middle;letter-spacing:0">v0.96</span></div>
 
   <div class="layout">
     <div class="leftcol">
@@ -40,6 +46,8 @@
           <button id="chordNotesBtn" type="button" class="playedSubmodeBtn" aria-pressed="false">Chords</button>
         </div>
       </div>
+
+      <div id="openVariantReport" class="openVariantReport adminOnly" hidden role="status" aria-live="polite"></div>
 
       <div class="sidebarSeparator adminOnly"></div>
 
@@ -170,7 +178,7 @@
 </div>
 
 
-<script src="player/player-core.js?v=0.95"></script>
+<script src="player/player-core.js?v=0.96"></script>
 <script src="player/reader.js?v=0.92"></script>
 <script src="publish-config.js?v=0.92"></script>
 <script src="player/publish.js?v=0.91"></script>

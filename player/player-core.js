@@ -186,6 +186,7 @@
   const adminLabelBtn=document.getElementById('adminLabelBtn');
   const playerLabelBtn=document.getElementById('playerLabelBtn');
   const statusEl=document.getElementById('status');
+  const openVariantReport=document.getElementById('openVariantReport');
   const eventPanel=document.getElementById('eventPanel');
   const sequenceWrap=document.querySelector('.sequenceWrap');
   const fretboardWrap=document.querySelector('.maincol .wrap');
@@ -1574,6 +1575,54 @@
   // move endpoints and bend references, receive exactly the same semitone
   // displacement. Guide marks below the nut cannot exist on a real guitar:
   // omit only those untimed guide events (and orphan release events).
+  // Open strings never appear as fingering targets. The conversion therefore
+  // needs a separate, visible audit in Admin; otherwise the next *fretted*
+  // assignment can be mistaken for evidence that conversion did nothing.
+  function openEventAudit(events){
+    const entries=[];
+    (events || []).forEach((e,index)=>{
+      if(!e || e.play===false) return;
+      let pitches=[];
+      if(e.type===EVENT_TYPE.FINGER_ON && e.f===0){
+        pitches=[{s:e.s,f:e.f}];
+      }else if(e.type===EVENT_TYPE.CHORD){
+        pitches=(e.notes || []).filter(n=>n.f===0);
+      }else if(e.type===EVENT_TYPE.MOVE){
+        pitches=isChordMoveEvent(e)
+          ? (e.chordAfter || []).filter(n=>n.f===0)
+          : [e.to].filter(n=>n && n.f===0);
+      }
+      if(pitches.length){
+        const strings=[...new Set(pitches.map(n=>TUNING[n.s]))]
+          .map(midi=>NAMES[mod12(midi)])
+          .join(', ');
+        entries.push({event:index+1,strings});
+      }
+    });
+    return entries;
+  }
+
+  function updateOpenVariantReport(){
+    if(!openVariantReport) return;
+    const isOpen=S.clipDraft.editingVariant==='open' && !!S.clipDraft.open;
+    openVariantReport.hidden=!isOpen;
+    if(!isOpen) return;
+
+    const shift=Number(S.clipDraft.openShift)||0;
+    const entries=openEventAudit(S.events);
+    const prefix=shift>0
+      ? `Shifted ${shift} fret${shift===1?'':'s'} toward the nut.`
+      : 'Shifted 0 frets: the source already contains an open performed note; a uniform further shift would move that note below the nut.';
+    const locations=entries.slice(0,9)
+      .map(x=>`#${x.event} (${x.strings})`).join(' · ');
+    const more=entries.length>9 ? ` · +${entries.length-9} more` : '';
+    openVariantReport.innerHTML=
+      `<strong>Open-position check</strong>`+
+      `${prefix} ${entries.length} sounding event${entries.length===1?'':'s'} ${entries.length===1?'uses':'use'} an open string.`+
+      `<div class="openSummaryDetail">${locations}${more || ''}</div>`+
+      `<div class="openSummaryDetail">Fingering mode skips open strings and highlights the next fretted note. Open notes are preserved in the Sequence and Player.</div>`;
+  }
+
   function makeOpenStringEvents(events){
     const shift=lowestSoundingFretInEvents(events);
     if(shift===null){
@@ -4393,6 +4442,7 @@
 
     renderEventList();
     updateChordButton();
+    updateOpenVariantReport();
   }
 
   function playableEvents(){return S.events.filter(e=>e.play!==false)}
@@ -8466,6 +8516,14 @@
     const conversion=makeOpenStringEvents(original.events);
     if(conversion.error){
       statusEl.innerHTML='<strong>Open-string version not created</strong><br>'+conversion.error;
+      // #status is intentionally hidden in the current layout; use the
+      // existing visible dialog or this failure looks like a successful tap.
+      showClipDialog({
+        title:'Open-string version not created',
+        text:conversion.error,
+        primary:'OK',
+        onPrimary:hideClipDialog
+      });
       return;
     }
     const {shift,events:openEvents,omittedFramework}=conversion;
@@ -8491,6 +8549,9 @@
     rebuildAuthor();
 
     statusEl.innerHTML=`<strong>Open-string version</strong><br>Shifted ${shift} fret${shift===1?'':'s'} toward the nut. Played notes at fret 0 need no finger. ${omittedFramework?`${omittedFramework} below-nut Framework marks were omitted. `:''}Assign the remaining fretted notes.`;
+
+    // Make the converted open notes auditable even when Fingering skips them.
+    updateOpenVariantReport();
 
     // Immediately open fingering assignment as requested.
     startFingeringAssignment();
@@ -8614,6 +8675,7 @@
 
     updateAuthorModeUI();
     updateScoreUI();
+    updateOpenVariantReport();
 
     statusEl.innerHTML=S.clipDraft.editingVariant==='open'
       ? '<strong>Open-string version</strong><br>Edit the authored open-position variant.'

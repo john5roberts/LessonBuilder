@@ -183,6 +183,7 @@
   const shell=document.getElementById('shell');
   const moveSvg=document.getElementById('moveSvg');
   const keySel=document.getElementById('keySel');
+  const keyTransposeStatus=document.getElementById('keyTransposeStatus');
   const adminLabelBtn=document.getElementById('adminLabelBtn');
   const playerLabelBtn=document.getElementById('playerLabelBtn');
   const statusEl=document.getElementById('status');
@@ -275,6 +276,7 @@
     playerKeyPc:0,
     playerVariant:'original',
     approvedClip:null,
+    adminKeyTransposeBasis:null,
 
     fingeringAssign:{
       active:false,
@@ -1741,27 +1743,118 @@
     return shift===null ? null : mod12(S.clipDraft.original.keyPc-shift);
   }
 
-  function chooseMovableDelta(events,sourceKeyPc,targetKeyPc){
-    const min=lowestFretInEvents(events);
-    const max=highestFretInEvents(events);
-    const residue=mod12(targetKeyPc-sourceKeyPc);
+  // Musical key changes must move the note positions.  A fretboard is not
+  // infinitely long: shifting a played position beyond fret 15 or below fret 1
+  // changes its octave but retains its pitch class.  Fret 0 is preserved only
+  // in the explicitly authored open-string variant or in the source key.
+  function shortestKeyDelta(sourceKeyPc,targetKeyPc){
+    const up=mod12(targetKeyPc-sourceKeyPc);
+    return up<=6 ? up : up-12;
+  }
+
+  function wrappedFret(f,delta){
+    if(delta===0) return f;
+    let result=f+delta;
+    while(result<1) result+=12;
+    while(result>TOTAL_FRETS) result-=12;
+    return result;
+  }
+
+  function candidateFretShift(positions,preferred,requiredMap=null){
     const candidates=[];
+    for(let octave=-4;octave<=4;octave++){
+      const delta=preferred+12*octave;
+      const fits=positions.every(p=>{
+        const next=p.f+delta;
+        if(next<1 || next>TOTAL_FRETS) return false;
+        const key=posKey(p.s,p.f);
+        return !requiredMap || !requiredMap.has(key) ||
+          requiredMap.get(key)===next;
+      });
+      if(fits) candidates.push(delta);
+    }
+    candidates.sort((a,b)=>Math.abs(a-preferred)-Math.abs(b-preferred) ||
+      Math.abs(a)-Math.abs(b) || a-b);
+    return candidates.length ? candidates[0] : null;
+  }
 
-    for(let k=-3;k<=3;k++){
-      const delta=residue+12*k;
-      const low=min+delta;
-      const high=max+delta;
-
-      // Movable form intentionally stays fretted. The exact open-position key
-      // is handled by the separately authored open variant.
-      if(low>=1 && high<=TOTAL_FRETS){
-        candidates.push(delta);
-      }
+  function transposeEventsForKey(events,sourceKeyPc,targetKeyPc){
+    const source=mod12(sourceKeyPc),target=mod12(targetKeyPc);
+    const original=cloneEvents(events);
+    if(source===target) return {events:original,delta:0,wrapped:false};
+    const preferred=shortestKeyDelta(source,target);
+    const all=[];
+    for(const e of original) eachEventPosition(e,p=>all.push({s:p.s,f:p.f}));
+    const wholeShift=candidateFretShift(all,preferred);
+    if(wholeShift!==null){
+      return {events:shiftEventsByFrets(original,wholeShift),
+        delta:wholeShift,wrapped:wholeShift!==preferred};
     }
 
-    if(!candidates.length) return null;
-    candidates.sort((a,b)=>Math.abs(a)-Math.abs(b) || a-b);
-    return candidates[0];
+    // A connected movement must never split across an octave boundary:
+    // e.g. a slide 14→15 transposed up one semitone becomes 3→4, not 15→4.
+    // Collect same-string/fret positions into components connected by movement
+    // endpoints, then choose ONE octave shift for each component.  This also
+    // keeps a preceding pluck, subsequent movement and chord voices aligned.
+    const parents=new Map();
+    function root(k){
+      if(!parents.has(k)) parents.set(k,k);
+      const v=parents.get(k);
+      if(v!==k) parents.set(k,root(v));
+      return parents.get(k);
+    }
+    function link(a,b){
+      if(!a || !b) return;
+      const ka=posKey(a.s,a.f),kb=posKey(b.s,b.f);
+      parents.set(root(ka),root(kb));
+    }
+    const locations=new Map();
+    for(const e of original){
+      eachEventPosition(e,p=>locations.set(posKey(p.s,p.f),{s:p.s,f:p.f}));
+      if(!isMoveEvent(e)) continue;
+      const pts=[e.from,e.to,e.bendHome].filter(p=>p &&
+        Number.isInteger(p.s) && Number.isFinite(p.f));
+      for(let i=1;i<pts.length;i++) link(pts[0],pts[i]);
+    }
+    const groups=new Map();
+    for(const key of parents.keys()){
+      const id=root(key);
+      if(!groups.has(id)) groups.set(id,[]);
+      if(locations.has(key)) groups.get(id).push(locations.get(key));
+    }
+    const mapping=new Map();
+    for(const points of groups.values()){
+      const delta=candidateFretShift(points,preferred);
+      if(delta===null){
+        return {error:'A connected slide, hammer-on, pull-off or bend spans more frets than can fit after wrapping. Revise that movement before transposing.'};
+      }
+      for(const point of points) mapping.set(posKey(point.s,point.f),point.f+delta);
+    }
+
+    // Preserve each chord shape as a whole when possible. When a chord is too
+    // wide to fit as one shape, wrap individual voices by octaves; the chord
+    // remains ONE simultaneous event and all its finger labels are retained.
+    function groupChord(notes){
+      if(!Array.isArray(notes) || !notes.length) return;
+      const pts=notes.filter(p=>p && Number.isInteger(p.s) && Number.isFinite(p.f));
+      const delta=candidateFretShift(pts,preferred,mapping);
+      if(delta===null) return;
+      for(const p of pts) mapping.set(posKey(p.s,p.f),p.f+delta);
+    }
+    for(const e of original){
+      if(e.type===EVENT_TYPE.CHORD) groupChord(e.notes);
+      if(isChordMoveEvent(e)){
+        groupChord(e.chordBefore);
+        groupChord(e.chordAfter);
+      }
+    }
+    for(const e of original){
+      eachEventPosition(e,p=>{
+        const key=posKey(p.s,p.f);
+        p.f=mapping.has(key)?mapping.get(key):wrappedFret(p.f,preferred);
+      });
+    }
+    return {events:original,delta:preferred,wrapped:true};
   }
 
   function eventsForPlayerKey(targetKeyPc){
@@ -1797,17 +1890,11 @@
       };
     }
 
-    const delta=chooseMovableDelta(original.events,source,target);
-    if(delta===null){
-      return {
-        error:'That transposition does not fit on the current 15-fret display.'
-      };
-    }
-
+    const transposed=transposeEventsForKey(original.events,source,target);
+    if(transposed.error) return transposed;
     return {
-      events:shiftEventsByFrets(original.events,delta),
-      variant:'transposed',
-      delta
+      ...transposed,
+      variant:'transposed'
     };
   }
 
@@ -1834,7 +1921,9 @@
       clipVariantTag.textContent='Open-string version';
     }else if(result.variant==='transposed'){
       const sign=result.delta>0?'+':'';
-      clipVariantTag.textContent=`Movable version (${sign}${result.delta} frets)`;
+      clipVariantTag.textContent=result.wrapped
+        ? `Transposed (${sign}${result.delta} semitones, octave wrap)`
+        : `Movable version (${sign}${result.delta} frets)`;
     }else{
       clipVariantTag.textContent='Original position';
     }
@@ -8724,11 +8813,58 @@
   S.playerKeyPc=0;
   playerKeyBtn.textContent='Key: '+keyLabelForPc(0);
   keySel.addEventListener('change',()=>{
+    const target=mod12(Number(keySel.value));
+    const previous=S.keyPc;
+    if(target===previous) return;
+
+    // Consecutive key choices always start from the same snapshot. Thus
+    // C→B→C restores the exact original fret positions rather than drifting
+    // by octaves. A subsequent note edit automatically starts a new basis.
+    const signature=JSON.stringify(S.events);
+    let basis=S.adminKeyTransposeBasis;
+    if(!basis || basis.lastSignature!==signature ||
+       basis.lastKeyPc!==previous ||
+       basis.editingVariant!==S.clipDraft.editingVariant){
+      basis={sourceKeyPc:previous,events:cloneEvents(S.events),
+        editingVariant:S.clipDraft.editingVariant};
+    }
+    const changed=transposeEventsForKey(basis.events,basis.sourceKeyPc,target);
+    if(changed.error){
+      keySel.value=String(previous);
+      if(keyTransposeStatus) keyTransposeStatus.textContent=changed.error;
+      return;
+    }
+
+    if(S.fingeringAssign.active) cancelFingeringAssignment(false);
     exitSequencePreview();
-    S.keyPc=Number(keySel.value);
-    if(document.body.classList.contains('player')) renderPlayback();
-    else renderAuthor();
+    S.editEventIndex=null;
+    S.editSelectionKind=null;
+    S.chordEntryFresh=true;
+    S.chordDraftIndex=null;
+    resetPendingAuthoringState();
+    S.events=cloneEvents(changed.events);
+    S.keyPc=target;
+    S.adminKeyTransposeBasis={...basis,
+      lastKeyPc:target,lastSignature:JSON.stringify(S.events)};
+    // A changed authoring key becomes the new master, not merely a label.
+    // Its previous open-position variant may no longer contain open strings,
+    // so require a new conversion before approval or republishing.
+    const hadOpen=!!S.clipDraft.open;
+    S.clipDraft.editingVariant='original';
+    S.clipDraft.original={keyPc:target,events:cloneEvents(S.events)};
+    S.clipDraft.open=null;
+    S.clipDraft.openShift=null;
+    S.adminKeyTransposeBasis.editingVariant='original';
+    clearAuthorHistoryForMode('framework');
+    clearAuthorHistoryForMode('played');
+    S.approvedClip=null;
+    try{sessionStorage.removeItem('lessonBuilderApprovedClip');}catch(_){}
+    rebuildAuthor();
     renderScore();
+    const prefix=changed.delta>0?'+':'';
+    if(keyTransposeStatus) keyTransposeStatus.textContent=
+      `Transposed ${prefix}${changed.delta} semitones${changed.wrapped?' (octave wrap)':''}. `+
+      (hadOpen?'Create and approve a new open-string version before publishing.':'Notes and fingering moved with the key.');
   });
 
   bindTap(authorModeBtn,()=>{
@@ -8978,6 +9114,8 @@
     } : null;
     S.clipDraft.openShift=normalized.openShift;
     S.clipDraft.editingVariant='original';
+    S.adminKeyTransposeBasis=null;
+    if(keyTransposeStatus) keyTransposeStatus.textContent='';
 
     S.events=cloneEvents(normalized.original.events);
     S.chordEntryFresh=true;
@@ -9006,7 +9144,7 @@
     enterAdmin,
     play:playAll,
     stop:()=>stopPlayback(),
-    version:'0.90-audio-routing-repair'
+    version:'0.97-key-transposition'
   });
 
 })();
